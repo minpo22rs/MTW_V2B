@@ -15,6 +15,7 @@ class Mg_CarController extends Controller
     public function __construct()
     {
         $this->url = 'mg_car';
+        $this->table = 'mg_cars';
         parent::__construct($this->url);
         $this->path_file .= '.mg_car';
         $this->menu = 'ข้อมูลรถยนต์'; //\App\Model\Menu::get_menu_name($this->url)['menu'];
@@ -100,7 +101,7 @@ class Mg_CarController extends Controller
 
         try {
             $data = [];
-            $columns = DB::getSchemaBuilder()->getColumnListing('mg_car');
+            $columns = DB::getSchemaBuilder()->getColumnListing($this->table);
             $count_columns = count($columns);
             if ($columns) {
                 foreach ($columns as $key => $name) {
@@ -120,7 +121,7 @@ class Mg_CarController extends Controller
             }
 
             // dd($data);
-            DB::table('mg_car')
+            DB::table($this->table)
                 ->insert($data);
             $id = DB::getPdo()->lastInsertId();
 
@@ -171,7 +172,7 @@ class Mg_CarController extends Controller
                         'car_img_height' => $height,
                     ];
 
-                    DB::table('mg_car')->where('id', $img_id)->update($data_img);
+                    DB::table($this->table)->where('id', $img_id)->update($data_img);
 
                 }
             }
@@ -183,6 +184,7 @@ class Mg_CarController extends Controller
             return redirect()->to('backend/' . $this->url)->with('success', true)->with('message', ' Create Complete!');
 
         } catch (\Exception $e) {
+            dd($e);
             DB::rollback();
             ## Log
             $log_code = \App\Model\Log\log_backend_login::log($this->url . '/เพิ่มข้อมูลรถยนต์/ID:/Error:' . $e->getMessage());
@@ -218,70 +220,70 @@ class Mg_CarController extends Controller
             'menu' => $this->menu,
             '_title' => $this->menu,
             'id' => $id,
-            'rec' => \App\Model\dashboard::first_car($id),
+            'rec' => \App\Model\dashboard::first_all($id,$this->table),
         ];
         return view($this->path_file . '.stock', $data);
     }
 
-    public function stock_input(Request $request)
-    {
-        foreach ($request->all() as $key => $value) {
-            ${$key} = $value;
-        }
+    // public function stock_input(Request $request)
+    // {
+    //     foreach ($request->all() as $key => $value) {
+    //         ${$key} = $value;
+    //     }
 
-        $this->validate(
-            $request,
-            [
-                'type' => 'required',
-                'car_stock' => 'required',
-            ],
-            [
-                'type.required' => 'กรุณาระบุประเภท stock ค่ะ',
-                'car_stock.required' => 'จำนวนรถยนต์จำเป็นต้องระบุข้อมูลค่ะ',
-            ]
-        );
+    //     $this->validate(
+    //         $request,
+    //         [
+    //             'type' => 'required',
+    //             'car_stock' => 'required',
+    //         ],
+    //         [
+    //             'type.required' => 'กรุณาระบุประเภท stock ค่ะ',
+    //             'car_stock.required' => 'จำนวนรถยนต์จำเป็นต้องระบุข้อมูลค่ะ',
+    //         ]
+    //     );
 
-        DB::beginTransaction();
+    //     DB::beginTransaction();
 
-        try {
-            $check = DB::table('dash_car')
-                ->where('car_id', $id)->first();
-            if ($type == 'in') {
-                $num = $check->car_stock + $car_stock;
-            } else if ($type == 'out') {
-                $num = $check->car_stock - $car_stock;
-            }
-            if ($num >= 0) {
-                DB::table('dash_car')
-                    ->where('car_id', $id)
-                    ->update([
-                        'car_stock' => $num,
-                    ]);
-                ## Log
-                \App\Model\Log\log_car_stock::log($type, $car_stock, $id);
-                \App\Model\Log\log_backend_login::log($this->url . '/แก้ไข้ Stock car/ID: ' . $id);
+    //     try {
+    //         $check = DB::table('dash_car')
+    //             ->where('car_id', $id)->first();
+    //         if ($type == 'in') {
+    //             $num = $check->car_stock + $car_stock;
+    //         } else if ($type == 'out') {
+    //             $num = $check->car_stock - $car_stock;
+    //         }
+    //         if ($num >= 0) {
+    //             DB::table('dash_car')
+    //                 ->where('car_id', $id)
+    //                 ->update([
+    //                     'car_stock' => $num,
+    //                 ]);
+    //             ## Log
+    //             \App\Model\Log\log_product_stock::log($type, $car_stock, $id);
+    //             \App\Model\Log\log_backend_login::log($this->url . '/แก้ไข้ Stock car/ID: ' . $id);
 
-                DB::commit();
-                return redirect()->to('backend/' . $this->url . '/' . $id . '/stock')->with('success', true)->with('message', ' Complete!');
-            } else if ($num < 0) {
-                ## Log
-                $log_code = \App\Model\Log\log_backend_login::log($this->url . '/แก้ไข้ Stock car/ID:/Error:จำนวนสต๊อกไม่ถูกต้อง');
+    //             DB::commit();
+    //             return redirect()->to('backend/' . $this->url . '/' . $id . '/stock')->with('success', true)->with('message', ' Complete!');
+    //         } else if ($num < 0) {
+    //             ## Log
+    //             $log_code = \App\Model\Log\log_backend_login::log($this->url . '/แก้ไข้ Stock car/ID:/Error:จำนวนสต๊อกไม่ถูกต้อง');
 
-                DB::commit();
-                return redirect()->to('backend/' . $this->url . '/' . $id . '/stock')->with('fail', true)->with('message', 'กรุณาเช็คจำนวนสต๊อก');
-            }
+    //             DB::commit();
+    //             return redirect()->to('backend/' . $this->url . '/' . $id . '/stock')->with('fail', true)->with('message', 'กรุณาเช็คจำนวนสต๊อก');
+    //         }
 
-        } catch (\Exception $e) {
+    //     } catch (\Exception $e) {
 
-            DB::rollback();
-            ## Log
-            $log_code = \App\Model\Log\log_backend_login::log($this->url . '/แก้ไข้ข้อมูล car/ID:/Error:' . substr($e->getMessage(), 0, 180));
-            // throw $e;
-            // echo $e->getMessage();
-            // return abort(404);
-            return back()->withInput()->with('fail', true)->with('message', 'ไม่สามารถทำรายการได้ในขณะนี้ กรุณาติดต่อผู้ดูแลระบบ รหัส:' . $log_code);
-        }
-    }
+    //         DB::rollback();
+    //         ## Log
+    //         $log_code = \App\Model\Log\log_backend_login::log($this->url . '/แก้ไข้ข้อมูล car/ID:/Error:' . substr($e->getMessage(), 0, 180));
+    //         // throw $e;
+    //         // echo $e->getMessage();
+    //         // return abort(404);
+    //         return back()->withInput()->with('fail', true)->with('message', 'ไม่สามารถทำรายการได้ในขณะนี้ กรุณาติดต่อผู้ดูแลระบบ รหัส:' . $log_code);
+    //     }
+    // }
 
     public function edit($id)
     {
@@ -290,7 +292,7 @@ class Mg_CarController extends Controller
             'menu' => $this->menu,
             '_title' => $this->menu,
             'id' => $id,
-            'rec' => \App\Model\dashboard::first_car($id),
+            'rec' => \App\Model\dashboard::first_all($id,$this->table),
         ];
 
         if (Auth::user()->role == 'admin' || Auth::user()->role == 'merchandize') {
@@ -340,7 +342,7 @@ class Mg_CarController extends Controller
         try {
 
             $data = [];
-            $columns = DB::getSchemaBuilder()->getColumnListing('mg_car');
+            $columns = DB::getSchemaBuilder()->getColumnListing($this->table);
             $count_columns = count($columns);
             if ($columns) {
                 foreach ($columns as $key => $name) {
@@ -367,7 +369,7 @@ class Mg_CarController extends Controller
             unset($data['id']);
 
             //dd($data);
-            DB::table('mg_car')
+            DB::table($this->table)
                 ->where('id', $id)
                 ->update($data);
 
@@ -417,7 +419,7 @@ class Mg_CarController extends Controller
                         'car_img_width' => $width,
                         'car_img_height' => $height,
                     ];
-                    DB::table('mg_car')->where('id', $img_id)->update($data_img);
+                    DB::table($this->table)->where('id', $img_id)->update($data_img);
 
                 }
             }
@@ -429,6 +431,7 @@ class Mg_CarController extends Controller
             return redirect()->to('backend/' . $this->url . '/' . $id . '/edit')->with('success', true)->with('message', ' Update Complete!');
 
         } catch (\Exception $e) {
+
             DB::rollback();
             ## Log
             $log_code = \App\Model\Log\log_backend_login::log($this->url . '/แก้ไข้ข้อมูลรถยนต์/ID:/Error:' . substr($e->getMessage(), 0, 180));
@@ -455,7 +458,7 @@ class Mg_CarController extends Controller
     {
         if (Auth::user()->role == 'admin' || Auth::user()->role == 'merchandize') {
             $data = [];
-            $columns = DB::getSchemaBuilder()->getColumnListing('mg_car');
+            $columns = DB::getSchemaBuilder()->getColumnListing($this->table);
             $count_columns = count($columns);
             if ($columns) {
                 foreach ($columns as $key => $name) {
@@ -482,7 +485,7 @@ class Mg_CarController extends Controller
 
     public function datatables(Request $request)
     {
-        $tbl = \App\Model\datatables::datatables_car(@$request->all());
+        $tbl = \App\Model\datatables::datatables_all(@$request->all(),$this->table);
         $DBT = datatables()->of($tbl);
         $DBT->escapeColumns(['*']); //อนุญาติให้ Return Html ถ้าเอาส่วนนี้ออกจะ Return Text
 
@@ -557,7 +560,7 @@ class Mg_CarController extends Controller
     public function imageslide($id)
     {
 
-        $car = \App\Model\dashboard::first_car($id);
+        $car = \App\Model\dashboard::first_all($id,$this->table);
         $data = [
             'url' => $this->url,
             'menu' => $this->menu,
