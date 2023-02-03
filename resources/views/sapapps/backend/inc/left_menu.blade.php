@@ -48,35 +48,35 @@
                 </li> -->
                 <li class=" nav-item"><a class="d-flex align-items-center" href="#"><i data-feather="package"></i><span class="menu-title text-truncate" data-i18n="product">สินค้า</span></a>
                     <ul class="menu-content">
-                        <li><a class="d-flex align-items-center" href="{!! url('backend/fti_product_category') !!}"><i data-feather="circle"></i><span class="menu-item text-truncate" data-i18n="List">ประเภทสินค้า</span></a>
+                        <li><a class="d-flex align-items-center" href="{!! url('backend/mg_product_category') !!}"><i data-feather="circle"></i><span class="menu-item text-truncate" data-i18n="List">ประเภทสินค้า</span></a>
                         </li>
-                        <li><a class="d-flex align-items-center" href="{!! url('backend/fti_product') !!}"><i data-feather="circle"></i><span class="menu-item text-truncate" data-i18n="List">รายการ</span></a>
+                        <li><a class="d-flex align-items-center" href="{!! url('backend/mg_product') !!}"><i data-feather="circle"></i><span class="menu-item text-truncate" data-i18n="List">รายการ</span></a>
                         </li>
-                        <li><a class="d-flex align-items-center" href="app-invoice-list.html"><i data-feather="circle"></i><span class="menu-item text-truncate" data-i18n="List">คลังสินค้า</span></a>
+                        {{-- <li><a class="d-flex align-items-center" href="app-invoice-list.html"><i data-feather="circle"></i><span class="menu-item text-truncate" data-i18n="List">คลังสินค้า</span></a> --}}
                         </li>
-                        <li><a class="d-flex align-items-center" href="{!! url('backend/fti_product/create') !!}"><i data-feather="circle"></i><span class="menu-item text-truncate" data-i18n="Add">เพิ่มข้อมูล</span></a>
+                        <li><a class="d-flex align-items-center" href="{!! url('backend/mg_product/create') !!}"><i data-feather="circle"></i><span class="menu-item text-truncate" data-i18n="Add">เพิ่มข้อมูล</span></a>
                         </li>
                     </ul>
                 </li>
                 <li class=" nav-item"><a class="d-flex align-items-center" href="#"><i data-feather="home"></i><span class="menu-title text-truncate" data-i18n="hotel">โรงแรม</span></a>
                     <ul class="menu-content">
-                        <li><a class="d-flex align-items-center" href="{!! url('backend/fti_hotel_category') !!}"><i data-feather="circle"></i><span class="menu-item text-truncate" data-i18n="List">ประเภทโรงแรม</span></a>
+                        <li><a class="d-flex align-items-center" href="{!! url('backend/mg_hotel_category') !!}"><i data-feather="circle"></i><span class="menu-item text-truncate" data-i18n="List">ประเภทโรงแรม</span></a>
                         </li>
-                        <li><a class="d-flex align-items-center" href="{!! url('backend/fti_hotel') !!}"><i data-feather="circle"></i><span class="menu-item text-truncate" data-i18n="List">รายการ</span></a>
+                        <li><a class="d-flex align-items-center" href="{!! url('backend/mg_hotel') !!}"><i data-feather="circle"></i><span class="menu-item text-truncate" data-i18n="List">รายการ</span></a>
                         </li>
-                        <li><a class="d-flex align-items-center" href="app-invoice-list.html"><i data-feather="circle"></i><span class="menu-item text-truncate" data-i18n="List">จำนวนห้อง</span></a>
+                        {{-- <li><a class="d-flex align-items-center" href="app-invoice-list.html"><i data-feather="circle"></i><span class="menu-item text-truncate" data-i18n="List">จำนวนห้อง</span></a> --}}
                         </li>
-                        <li><a class="d-flex align-items-center" href="{!! url('backend/fti_hotel/create') !!}"><i data-feather="circle"></i><span class="menu-item text-truncate" data-i18n="Add">เพิ่มข้อมูล</span></a>
+                        <li><a class="d-flex align-items-center" href="{!! url('backend/mg_hotel/create') !!}"><i data-feather="circle"></i><span class="menu-item text-truncate" data-i18n="Add">เพิ่มข้อมูล</span></a>
                         </li>
                     </ul>
                 </li>
                 <li class=" nav-item"><a class="d-flex align-items-center" href="#"><i data-feather="map-pin"></i><span class="menu-title text-truncate" data-i18n="car">ร้านอาหาร</span></a>
                     <ul class="menu-content">
-                        <li><a class="d-flex align-items-center" href="app-invoice-list.html"><i data-feather="circle"></i><span class="menu-item text-truncate" data-i18n="List">ประเภทอาหาร</span></a>
+                        <li><a class="d-flex align-items-center" href="{!! url('backend/mg_restaurant_category') !!}"><i data-feather="circle"></i><span class="menu-item text-truncate" data-i18n="List">ประเภทอาหาร</span></a>
                         </li>
-                        <li><a class="d-flex align-items-center" href="app-invoice-list.html"><i data-feather="circle"></i><span class="menu-item text-truncate" data-i18n="List">รายการ</span></a>
+                        <li><a class="d-flex align-items-center" href="{!! url('backend/mg_restaurant') !!}"><i data-feather="circle"></i><span class="menu-item text-truncate" data-i18n="List">รายการ</span></a>
                         </li>
-                        <li><a class="d-flex align-items-center" href="app-invoice-add.html"><i data-feather="circle"></i><span class="menu-item text-truncate" data-i18n="Add">เพิ่มข้อมูล</span></a>
+                        <li><a class="d-flex align-items-center" href="{!! url('backend/mg_restaurant/create') !!}"><i data-feather="circle"></i><span class="menu-item text-truncate" data-i18n="Add">เพิ่มข้อมูล</span></a>
                         </li>
                     </ul>
                 </li>
@@ -94,9 +94,9 @@
                 </li>
                 <li class=" nav-item"><a class="d-flex align-items-center" href="#"><i data-feather="map"></i><span class="menu-title text-truncate" data-i18n="tour">สถานที่ท่องเที่ยว</span></a>
                     <ul class="menu-content">
-                        <li><a class="d-flex align-items-center" href="{!! url('backend/fti_attraction') !!}"><i data-feather="circle"></i><span class="menu-item text-truncate" data-i18n="List">รายการ</span></a>
+                        <li><a class="d-flex align-items-center" href="{!! url('backend/mg_attraction') !!}"><i data-feather="circle"></i><span class="menu-item text-truncate" data-i18n="List">รายการ</span></a>
                         </li>
-                        <li><a class="d-flex align-items-center" href="{!! url('backend/fti_attraction/create') !!}"><i data-feather="circle"></i><span class="menu-item text-truncate" data-i18n="Add">เพิ่มข้อมูล</span></a>
+                        <li><a class="d-flex align-items-center" href="{!! url('backend/mg_attraction/create') !!}"><i data-feather="circle"></i><span class="menu-item text-truncate" data-i18n="Add">เพิ่มข้อมูล</span></a>
                         </li>
                     </ul>
                 </li>

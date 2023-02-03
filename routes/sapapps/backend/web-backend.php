@@ -383,8 +383,8 @@ Route::get($url.'/{id?}/render', array('uses' => $file.'Controller@show'))->name
 /*============================================
 Note : Product
 ===============================================*/
-$url = 'fti_product';
-$file = 'Fti_Product';
+$url = 'mg_product';
+$file = 'Mg_Product';
 Route::resource($url, $file.'Controller')
 ->only([
     'index', 'show', 'create', 'store', 'update', 'destroy', 'edit'
@@ -408,8 +408,8 @@ Route::get($url.'/{id?}/imageslide/{id2?}/delete', array('uses' => $file.'Contro
 /*============================================
 Note : Product Category
 ===============================================*/
-$url = 'fti_product_category';
-$file = 'Fti_Product_Category';
+$url = 'mg_product_category';
+$file = 'Mg_Product_Category';
 Route::resource($url, $file.'Controller')
 ->only([
     'index', 'show', 'create', 'store', 'update', 'destroy', 'edit'
@@ -424,8 +424,8 @@ Route::get($url.'/{id?}/delete', array('uses' => $file.'Controller@delete'))->na
 /*============================================
 Note : Attraction
 ===============================================*/
-$url = 'fti_attraction';
-$file = 'Fti_Attraction';
+$url = 'mg_attraction';
+$file = 'Mg_Attraction';
 Route::resource($url, $file.'Controller')
 ->only([
     'index', 'show', 'create', 'store', 'update', 'destroy', 'edit'
@@ -443,8 +443,8 @@ Route::get($url.'/{id?}/delete', array('uses' => $file.'Controller@delete'))->na
 /*============================================
 Note : Hotel
 ===============================================*/
-$url = 'fti_hotel';
-$file = 'Fti_Hotel';
+$url = 'mg_hotel';
+$file = 'Mg_Hotel';
 Route::resource($url, $file.'Controller')
 ->only([
     'index', 'show', 'create', 'store', 'update', 'destroy', 'edit'
@@ -455,14 +455,65 @@ Route::get($url.'/{id?}/stock', array('uses' => $file.'Controller@stock'))->name
 Route::post($url.'/{id?}/stock/input', array('uses' => $file.'Controller@stock_input'))->name($url.'.stock_input');
 Route::post($url.'/datatables', array('uses' => $file.'Controller@datatables'))->name($url.'.datatables');
 Route::get($url.'/{id?}/delete', array('uses' => $file.'Controller@delete'))->name($url.'.delete');
+### Image
+Route::get($url.'/{id?}/imageslide', array('uses' => $file.'Controller@imageslide'))->name($url.'.imageslide');
+Route::post($url.'/datatables_image', array('uses' => $file.'Controller@datatables_image'))->name($url.'.datatables_image');
+Route::post($url.'/{id?}/imageslide', array('uses' => $file.'Controller@image_store'))->name($url.'.image_store');
+Route::put($url.'/{id?}/imageslide/{id2?}', array('uses' => $file.'Controller@image_update'))->name($url.'.image_update');
+Route::get($url.'/{id?}/imageslide/{id2?}/delete', array('uses' => $file.'Controller@image_delete'))->name($url.'.image_delete');
 
 /*============================================ NEW
 ### Home / Hotel Category
 /*============================================
 Note : Hotel Category
 ===============================================*/
-$url = 'fti_hotel_category';
-$file = 'Fti_hotel_Category';
+$url = 'mg_hotel_category';
+$file = 'Mg_hotel_Category';
+Route::resource($url, $file.'Controller')
+->only([
+    'index', 'show', 'create', 'store', 'update', 'destroy', 'edit'
+])->except([
+
+]);
+Route::post($url.'/datatables', array('uses' => $file.'Controller@datatables'))->name($url.'.datatables');
+Route::get($url.'/{id?}/delete', array('uses' => $file.'Controller@delete'))->name($url.'.delete');
+
+
+
+
+
+
+/*============================================ NEW
+### Home / restaurant
+/*============================================
+Note : restaurant
+===============================================*/
+$url = 'mg_restaurant';
+$file = 'Mg_Restaurant';
+Route::resource($url, $file.'Controller')
+->only([
+    'index', 'show', 'create', 'store', 'update', 'destroy', 'edit'
+])->except([
+
+]);
+Route::get($url.'/{id?}/stock', array('uses' => $file.'Controller@stock'))->name($url.'.stock');
+Route::post($url.'/{id?}/stock/input', array('uses' => $file.'Controller@stock_input'))->name($url.'.stock_input');
+Route::post($url.'/datatables', array('uses' => $file.'Controller@datatables'))->name($url.'.datatables');
+Route::get($url.'/{id?}/delete', array('uses' => $file.'Controller@delete'))->name($url.'.delete');
+### Image
+Route::get($url.'/{id?}/imageslide', array('uses' => $file.'Controller@imageslide'))->name($url.'.imageslide');
+Route::post($url.'/datatables_image', array('uses' => $file.'Controller@datatables_image'))->name($url.'.datatables_image');
+Route::post($url.'/{id?}/imageslide', array('uses' => $file.'Controller@image_store'))->name($url.'.image_store');
+Route::put($url.'/{id?}/imageslide/{id2?}', array('uses' => $file.'Controller@image_update'))->name($url.'.image_update');
+Route::get($url.'/{id?}/imageslide/{id2?}/delete', array('uses' => $file.'Controller@image_delete'))->name($url.'.image_delete');
+
+/*============================================ NEW
+### Home / restaurant Category
+/*============================================
+Note : restaurant Category
+===============================================*/
+$url = 'mg_restaurant_category';
+$file = 'Mg_restaurant_Category';
 Route::resource($url, $file.'Controller')
 ->only([
     'index', 'show', 'create', 'store', 'update', 'destroy', 'edit'

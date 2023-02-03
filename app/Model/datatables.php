@@ -2,82 +2,121 @@
 
 namespace App\Model;
 
-use Illuminate\Database\Eloquent\Model;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-
 ####### Include
-use Auth;
 use DB;
-use Agent;
+use Illuminate\Database\Eloquent\Model;
 
 class datatables extends Model
 {
-    static public function datatables_category($post = [],$type = '')
+    public static function datatables_category($post = [], $type = '')
     {
         ### Request
         //General::print_r_($post);exit;
         foreach (@$post as $key => $value) {
-            ${$key}  = $value;
-        }
-
-        $get = DB::table('fti_category')
-        ->where('type',$type)
-        ->whereNull('deleted_at');
-
-        return $get;
-    }
-
-    static public function datatables_product($post = [])
-    {
-        ### Request
-        //General::print_r_($post);exit;
-        foreach (@$post as $key => $value) {
-            ${$key}  = $value;
-        }
-
-        $get = DB::table('fti_product')
-        ->whereNull('deleted_at');
-
-        return $get;
-    }
-    static public function datatables_hotel($post = [])
-    {
-        ### Request
-        //General::print_r_($post);exit;
-        foreach (@$post as $key => $value) {
-            ${$key}  = $value;
-        }
-
-        $get = DB::table('fti_hotels')
-        ->whereNull('deleted_at');
-
-        return $get;
-    }
-
-    static public function datatables_product_img_slide($post = [],$id)
-    {
-        ### Request
-        //General::print_r_($post);exit;
-        foreach (@$post as $key => $value) {
-            ${$key}  = $value;
-        }
-
-        $get = DB::table('fti_slide_img')
-        ->where('type','product')
-        ->where('ref_id',$id)
-        ->whereNull('deleted_at');
-
-        return $get;
-    }
-
-    static public function datatables_attraction($post = [])
-    {
-        foreach (@$post as $key => $value){
             ${$key} = $value;
         }
 
-        $get = DB::table('fti_attractions')
-        ->whereNull('deleted_at');
+        $get = DB::table('mg_category')
+            ->where('type', $type)
+            ->whereNull('deleted_at');
+
+        return $get;
+    }
+    public static function datatables_all($post = [], $table)
+    {
+        ### Request
+        //General::print_r_($post);exit;
+        foreach (@$post as $key => $value) {
+            ${$key} = $value;
+        }
+
+        $get = DB::table($table)
+            ->whereNull('deleted_at');
+
+        return $get;
+    }
+    public static function datatables_product($post = [])
+    {
+        ### Request
+        //General::print_r_($post);exit;
+        foreach (@$post as $key => $value) {
+            ${$key} = $value;
+        }
+
+        $get = DB::table('mg_product')
+            ->whereNull('deleted_at');
+
+        return $get;
+    }
+    public static function datatables_hotel($post = [])
+    {
+        ### Request
+        //General::print_r_($post);exit;
+        foreach (@$post as $key => $value) {
+            ${$key} = $value;
+        }
+
+        $get = DB::table('mg_hotels')
+            ->whereNull('deleted_at');
+
+        return $get;
+    }
+
+    public static function datatables_product_img_slide($post = [], $id)
+    {
+        ### Request
+        //General::print_r_($post);exit;
+        foreach (@$post as $key => $value) {
+            ${$key} = $value;
+        }
+
+        $get = DB::table('mg_slide_img')
+            ->where('type', 'product')
+            ->where('ref_id', $id)
+            ->whereNull('deleted_at');
+
+        return $get;
+    }
+
+    public static function datatables_hotel_img_slide($post = [], $id)
+    {
+        ### Request
+        //General::print_r_($post);exit;
+        foreach (@$post as $key => $value) {
+            ${$key} = $value;
+        }
+
+        $get = DB::table('mg_slide_img')
+            ->where('type', 'hotel')
+            ->where('ref_id', $id)
+            ->whereNull('deleted_at');
+
+        return $get;
+    }
+    public static function datatables_restaurant_img_slide($post = [], $id)
+    {
+        ### Request
+        //General::print_r_($post);exit;
+        foreach (@$post as $key => $value) {
+            ${$key} = $value;
+        }
+
+        $get = DB::table('mg_slide_img')
+            ->where('type', 'restaurant')
+            ->where('ref_id', $id)
+            ->whereNull('deleted_at');
+
+        return $get;
+    }
+
+    public static function datatables_attraction($post = [])
+    {
+        foreach (@$post as $key => $value) {
+            ${$key} = $value;
+        }
+
+        $get = DB::table('mg_attractions')
+            ->whereNull('deleted_at');
 
         return $get;
     }

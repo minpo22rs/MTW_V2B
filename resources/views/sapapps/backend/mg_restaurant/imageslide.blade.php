@@ -3,12 +3,12 @@
 @push('styles')
 <!-- Data Table Css -->
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.css">
-  
+
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.js"></script>
 <!-- Custom css -->
 <link rel="stylesheet" type="text/css" href="{!! asset('resources/css/config_datatables.css') !!}">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.9.0/css/all.css">
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.9.0/css/v4-shims.css">  
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.9.0/css/v4-shims.css">
 @endpush
 
 
@@ -24,11 +24,11 @@
                             <h2 class="content-header-title float-start mb-0">{{$menu}}</h2>
                             <div class="breadcrumb-wrapper">
                                 <ol class="breadcrumb">
-                                    <li class="breadcrumb-item"><a href="#">สินค้า</a>
+                                    <li class="breadcrumb-item"><a href="#">ร้านอาหาร</a>
                                     </li>
-                                    <li class="breadcrumb-item"><a href="#">{{$product}}</a>
+                                    <li class="breadcrumb-item"><a href="#">{{$restaurant}}</a>
                                     </li>
-                                    <li class="breadcrumb-item"><a href="#">รูปภาพสินค้า</a>
+                                    <li class="breadcrumb-item"><a href="#">รูปภาพร้านอาหาร</a>
                                     </li>
                                 </ol>
                             </div>
@@ -40,17 +40,17 @@
                 <div class="col-md-12 col-12">
                     <div class="card">
                         <div class="card-header">
-                            <h4 class="card-title">เพิ่มรูปภาพสินค้า</h4>
+                            <h4 class="card-title">เพิ่มรูปภาพร้านอาหาร</h4>
                         </div>
                         <div class="card-body">
                             <form class="form form-horizontal" action="{{url('/backend/'.$url.'/'.$id.'/imageslide')}}" method="POST" enctype="multipart/form-data">
                                 <input type="hidden" name="_token" value="{{csrf_token()}}">
-                                <input type="hidden" name="type" value="product">
+                                <input type="hidden" name="type" value="restaurant">
                                 <div class="row">
                                     <div class="col-10">
                                         <div class="mb-1 row">
                                             <div class="col-sm-12">
-                                                <label class="col-form-label" for="slide_img_name">รูปภาพสินค้า</label>
+                                                <label class="col-form-label" for="slide_img_name">รูปภาพร้านอาหาร</label>
                                             </div>
                                             <div class="col-sm-12">
                                                 <input type="file" id="slide_img_name" class="form-control" name="slide_img_name" value=""/>
@@ -81,7 +81,7 @@
                                     <thead>
                                         <tr>
                                             <th>ID</th>
-                                            <th>รูปภาพสินค้า</th>
+                                            <th>รูปภาพร้านอาหาร</th>
                                             <th>วันที่ลงข้อมูล</th>
                                             <th>วันที่อัพเดตข้อมูล</th>
                                             <th>ผู้ลงข้อมูล</th>
@@ -145,7 +145,7 @@
 <script type="text/javascript">
     $(document).ready(function(){
         var ajax = {
-            "url": '{!! route($url.'.datatables_image') !!}', 
+            "url": '{!! route($url.'.datatables_image') !!}',
             "type": "POST",
             'headers': {
                 'X-CSRF-TOKEN': '{!! csrf_token() !!}'
@@ -153,7 +153,7 @@
             'data': {
                 'id' : '{!! $id !!}'
             }
-        }; 
+        };
         $('#data-estate').dataTable({
             paging: true,
             searching: true,
@@ -178,33 +178,33 @@
                     render: function(data) {
                         return data;
                     },
-                },   
+                },
                 { data: 'created_at',
                     render: function(data) {
                         return data;
                     },
-                },   
+                },
                 { data: 'updated_at',
                     render: function(data) {
                         return data;
                     },
-                },   
+                },
                 { data: 'updated_at_ref_admin_id',
                     render: function(data) {
                         return data;
                     },
-                },     
+                },
                 { data: 'manage',
                     render: function(data) {
                         return data;
                     },
-                },          
+                },
             ],
         });
-        
+
     });
 </script>
 @endpush
 
 
-    
+

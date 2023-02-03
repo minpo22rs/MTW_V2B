@@ -809,7 +809,7 @@ class dashboard extends Model
         $html  = '';
         $html .= '<option value="">'.$text_first.'</option>';
 
-        $get = DB::table('fti_category')->where('type',$type)->whereNull('deleted_at')->get();
+        $get = DB::table('mg_category')->where('type',$type)->whereNull('deleted_at')->get();
         // Log::debug($get);
 
         if(@$get) {
@@ -824,7 +824,7 @@ class dashboard extends Model
     static public function cate_name($id)
     {
         if($id != '') {
-            $first = DB::table('fti_category')
+            $first = DB::table('mg_category')
             ->where('id',$id)
             ->first();
 
@@ -842,7 +842,7 @@ class dashboard extends Model
 
     static public function first_product($id)
     {
-        $first = DB::table('fti_product')
+        $first = DB::table('mg_product')
         ->whereNull('deleted_at')
         ->where('id',$id)
         ->first();
@@ -854,7 +854,19 @@ class dashboard extends Model
     }
     static public function first_hotel($id)
     {
-        $first = DB::table('fti_hotels')
+        $first = DB::table('mg_hotels')
+        ->whereNull('deleted_at')
+        ->where('id',$id)
+        ->first();
+
+        if(!$first) {
+            return [];
+        }
+        return $first;
+    }
+    static public function first_all($id,$table)
+    {
+        $first = DB::table($table)
         ->whereNull('deleted_at')
         ->where('id',$id)
         ->first();
@@ -867,7 +879,7 @@ class dashboard extends Model
 
     static public function first_attraction($id)
     {
-        $first = DB::table('fti_attractions')
+        $first = DB::table('mg_attractions')
         ->whereNull('deleted_at')
         ->where('id',$id)
         ->first();

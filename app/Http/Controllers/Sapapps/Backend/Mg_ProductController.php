@@ -10,13 +10,13 @@ use File;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
-class Fti_ProductController extends Controller
+class Mg_ProductController extends Controller
 {
     public function __construct()
     {
-        $this->url = 'fti_product';
+        $this->url = 'mg_product';
         parent::__construct($this->url);
-        $this->path_file .= '.fti_product';
+        $this->path_file .= '.mg_product';
         $this->menu = 'ข้อมูลสินค้า'; //\App\Model\Menu::get_menu_name($this->url)['menu'];
         $this->menu_right = ''; //\App\Model\Menu::get_menu_name($this->url)['menu_right'];
     }
@@ -100,7 +100,7 @@ class Fti_ProductController extends Controller
 
         try {
             $data = [];
-            $columns = DB::getSchemaBuilder()->getColumnListing('fti_product');
+            $columns = DB::getSchemaBuilder()->getColumnListing('mg_product');
             $count_columns = count($columns);
             if ($columns) {
                 foreach ($columns as $key => $name) {
@@ -120,7 +120,7 @@ class Fti_ProductController extends Controller
             }
 
             // dd($data);
-            DB::table('fti_product')
+            DB::table('mg_product')
                 ->insert($data);
             $id = DB::getPdo()->lastInsertId();
 
@@ -171,7 +171,7 @@ class Fti_ProductController extends Controller
                         'product_img_height' => $height,
                     ];
 
-                    DB::table('fti_product')->where('id', $img_id)->update($data_img);
+                    DB::table('mg_product')->where('id', $img_id)->update($data_img);
 
                 }
             }
@@ -340,7 +340,7 @@ class Fti_ProductController extends Controller
         try {
 
             $data = [];
-            $columns = DB::getSchemaBuilder()->getColumnListing('fti_product');
+            $columns = DB::getSchemaBuilder()->getColumnListing('mg_product');
             $count_columns = count($columns);
             if ($columns) {
                 foreach ($columns as $key => $name) {
@@ -367,7 +367,7 @@ class Fti_ProductController extends Controller
             unset($data['id']);
 
             //dd($data);
-            DB::table('fti_product')
+            DB::table('mg_product')
                 ->where('id', $id)
                 ->update($data);
 
@@ -417,7 +417,7 @@ class Fti_ProductController extends Controller
                         'product_img_width' => $width,
                         'product_img_height' => $height,
                     ];
-                    DB::table('fti_product')->where('id', $img_id)->update($data_img);
+                    DB::table('mg_product')->where('id', $img_id)->update($data_img);
 
                 }
             }
@@ -455,7 +455,7 @@ class Fti_ProductController extends Controller
     {
         if (Auth::user()->role == 'admin' || Auth::user()->role == 'merchandize') {
             $data = [];
-            $columns = DB::getSchemaBuilder()->getColumnListing('fti_product');
+            $columns = DB::getSchemaBuilder()->getColumnListing('mg_product');
             $count_columns = count($columns);
             if ($columns) {
                 foreach ($columns as $key => $name) {
@@ -469,7 +469,7 @@ class Fti_ProductController extends Controller
                 }
             }
             //dd($data);
-            DB::table('fti_product')
+            DB::table('mg_product')
                 ->where('id', $id)
                 ->update($data);
             ## Log
@@ -598,7 +598,7 @@ class Fti_ProductController extends Controller
 
         try {
             $data = [];
-            $columns = DB::getSchemaBuilder()->getColumnListing('fti_slide_img');
+            $columns = DB::getSchemaBuilder()->getColumnListing('mg_slide_img');
             $count_columns = count($columns);
             if ($columns) {
                 foreach ($columns as $key => $name) {
@@ -624,7 +624,7 @@ class Fti_ProductController extends Controller
             }
 
             //dd($data);
-            DB::table('fti_slide_img')
+            DB::table('mg_slide_img')
                 ->insert($data);
             $id = DB::getPdo()->lastInsertId();
 
@@ -673,7 +673,7 @@ class Fti_ProductController extends Controller
                         'slide_img_width' => $width,
                         'slide_img_height' => $height,
                     ];
-                    DB::table('fti_slide_img')->where('id', $img_id)->update($data_img);
+                    DB::table('mg_slide_img')->where('id', $img_id)->update($data_img);
 
                 }
             }
@@ -699,9 +699,9 @@ class Fti_ProductController extends Controller
     public function image_delete($ref_id, $id)
     {
         // dd($id);
-        $img = DB::table('fti_slide_img')->where('id', $id)->first();
+        $img = DB::table('mg_slide_img')->where('id', $id)->first();
         Storage::delete('image/slide/product/' . $img->slide_img_name);
-        DB::table('fti_slide_img')
+        DB::table('mg_slide_img')
             ->where('id', $id)
             ->delete();
 

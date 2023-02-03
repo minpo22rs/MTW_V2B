@@ -2,27 +2,22 @@
 
 namespace App\Http\Controllers\Sapapps\Backend;
 
-// use App\Helpers\General;
-use App\Helpers\General;
 use App\Http\Controllers\Controller;
 use Auth;
 use DB;
 use Illuminate\Http\Request;
-use Intervention\Image\Facades\Image as Image;
-use Illuminate\Support\Facades\Storage;
-use File;
 
-class Fti_Product_CategoryController extends Controller
+class Mg_Restaurant_CategoryController extends Controller
 {
+
     public function __construct()
     {
-        $this->url = 'fti_product_category';
+        $this->url = 'mg_restaurant_category';
         parent::__construct($this->url);
-        $this->path_file .= '.fti_product_category';
-        $this->menu = 'ประเภทสินค้า'; //\App\Model\Menu::get_menu_name($this->url)['menu'];
+        $this->path_file .= '.mg_restaurant_category';
+        $this->menu = 'ประเภทร้านอาหาร'; //\App\Model\Menu::get_menu_name($this->url)['menu'];
         $this->menu_right = ''; //\App\Model\Menu::get_menu_name($this->url)['menu_right'];
     }
-
     /**
      * Display a listing of the resource.
      *
@@ -36,6 +31,16 @@ class Fti_Product_CategoryController extends Controller
             '_title' => $this->menu,
         ];
         return view($this->path_file . '.index', $data);
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        //
     }
 
     /**
@@ -59,7 +64,7 @@ class Fti_Product_CategoryController extends Controller
                 'cate_name' => 'required',
             ],
             [
-                'cate_name.required' => 'ประเภทสินค้าจำเป็นต้องระบุข้อมูลค่ะ',
+                'cate_name.required' => 'ประเภทร้านอาหารจำเป็นต้องระบุข้อมูลค่ะ',
             ]
         );
 
@@ -67,7 +72,7 @@ class Fti_Product_CategoryController extends Controller
 
         try {
             $data = [];
-            $columns = DB::getSchemaBuilder()->getColumnListing('fti_category');
+            $columns = DB::getSchemaBuilder()->getColumnListing('mg_category');
             $count_columns = count($columns);
             if ($columns) {
                 foreach ($columns as $key => $name) {
@@ -82,7 +87,7 @@ class Fti_Product_CategoryController extends Controller
                 }
             }
             // dd($data);
-            DB::table('fti_category')
+            DB::table('mg_category')
                 ->insert($data);
             $id = DB::getPdo()->lastInsertId();
 
@@ -112,7 +117,7 @@ class Fti_Product_CategoryController extends Controller
 
                     ### Path Real
                     $FileGen = $img_id . '.' . $file->getClientOriginalExtension();
-                    $Path_File = storage_path('app/public/image/category/product/');
+                    $Path_File = storage_path('app/public/image/category/restaurant/');
 
                     ### Resize - ก่อนย้ายจาก temp ไป Folder รูป
                     // $Path_File_Resize  = storage_path('app/public/image/image/tmp');
@@ -132,13 +137,13 @@ class Fti_Product_CategoryController extends Controller
                         'cover_img_width' => $width,
                         'cover_img_height' => $height,
                     ];
-                    DB::table('fti_category')->where('id', $img_id)->update($data_img);
+                    DB::table('mg_category')->where('id', $img_id)->update($data_img);
 
                 }
             }
 
             ## Log
-            \App\Model\Log\log_backend_login::log($this->url . '/เพิ่มข้อมูลประเภทสินค้า/ID: ' . $id);
+            \App\Model\Log\log_backend_login::log($this->url . '/เพิ่มข้อมูลประเภทร้านอาหาร/ID: ' . $id);
 
             DB::commit();
             return redirect()->to('backend/' . $this->url)->with('success', true)->with('message', ' Create Complete!');
@@ -146,7 +151,7 @@ class Fti_Product_CategoryController extends Controller
         } catch (\Exception $e) {
             DB::rollback();
             ## Log
-            $log_code = \App\Model\Log\log_backend_login::log($this->url . '/เพิ่มข้อมูลประเภทสินค้า/ID:/Error:' . $e->getMessage());
+            $log_code = \App\Model\Log\log_backend_login::log($this->url . '/เพิ่มข้อมูลประเภทร้านอาหาร/ID:/Error:' . $e->getMessage());
             // throw $e;
             // echo $e->getMessage();
             // return abort(404);
@@ -161,6 +166,17 @@ class Fti_Product_CategoryController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show($id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
     {
         //
     }
@@ -186,7 +202,7 @@ class Fti_Product_CategoryController extends Controller
                 'cate_name' => 'required',
             ],
             [
-                'cate_name.required' => 'ประเภทสินค้าจำเป็นต้องระบุข้อมูลค่ะ',
+                'cate_name.required' => 'ประเภทร้านอาหารจำเป็นต้องระบุข้อมูลค่ะ',
             ]
         );
 
@@ -195,7 +211,7 @@ class Fti_Product_CategoryController extends Controller
         try {
 
             $data = [];
-            $columns = DB::getSchemaBuilder()->getColumnListing('fti_category');
+            $columns = DB::getSchemaBuilder()->getColumnListing('mg_category');
             $count_columns = count($columns);
             if ($columns) {
                 foreach ($columns as $key => $name) {
@@ -222,7 +238,7 @@ class Fti_Product_CategoryController extends Controller
             unset($data['id']);
 
             //dd($data);
-            DB::table('fti_category')
+            DB::table('mg_category')
                 ->where('id', $id)
                 ->update($data);
 
@@ -251,7 +267,7 @@ class Fti_Product_CategoryController extends Controller
 
                     ### Path Real
                     $FileGen = $img_id . '.' . $file->getClientOriginalExtension();
-                    $Path_File = storage_path('app/public/image/category/product/');
+                    $Path_File = storage_path('app/public/image/category/restaurant/');
 
                     ### Resize - ก่อนย้ายจาก temp ไป Folder รูป
                     // $Path_File_Resize  = storage_path('app/public/image/image/tmp');
@@ -271,13 +287,13 @@ class Fti_Product_CategoryController extends Controller
                         'cover_img_width' => $width,
                         'cover_img_height' => $height,
                     ];
-                    DB::table('fti_category')->where('id', $img_id)->update($data_img);
+                    DB::table('mg_category')->where('id', $img_id)->update($data_img);
 
                 }
             }
 
             ## Log
-            \App\Model\Log\log_backend_login::log($this->url . '/แก้ไข้ข้อมูลประเภทสินค้า/ID: ' . $id);
+            \App\Model\Log\log_backend_login::log($this->url . '/แก้ไข้ข้อมูลประเภทร้านอาหาร/ID: ' . $id);
 
             DB::commit();
             return redirect()->to('backend/' . $this->url)->with('success', true)->with('message', ' Update Complete!');
@@ -285,7 +301,7 @@ class Fti_Product_CategoryController extends Controller
         } catch (\Exception $e) {
             DB::rollback();
             ## Log
-            $log_code = \App\Model\Log\log_backend_login::log($this->url . '/แก้ไข้ข้อมูลประเภทสินค้า/ID:/Error:' . $e->getMessage());
+            $log_code = \App\Model\Log\log_backend_login::log($this->url . '/แก้ไข้ข้อมูลประเภทร้านอาหาร/ID:/Error:' . $e->getMessage());
             // throw $e;
             // echo $e->getMessage();
             // return abort(404);
@@ -304,11 +320,10 @@ class Fti_Product_CategoryController extends Controller
     {
         //
     }
-
     public function delete($id)
     {
         $data = [];
-        $columns = DB::getSchemaBuilder()->getColumnListing('fti_category');
+        $columns = DB::getSchemaBuilder()->getColumnListing('mg_category');
         $count_columns = count($columns);
         if ($columns) {
             foreach ($columns as $key => $name) {
@@ -322,18 +337,17 @@ class Fti_Product_CategoryController extends Controller
             }
         }
         // dd($data);
-        DB::table('fti_category')
+        DB::table('mg_category')
             ->where('id', $id)
             ->update($data);
         ## Log
-        \App\Model\Log\log_backend_login::log('ลบประเภทสินค้า/ID:' . $id);
+        \App\Model\Log\log_backend_login::log('ลบประเภทร้านอาหาร/ID:' . $id);
         return back()->with('success', true)->with('message', ' Delete Complete!');
     }
-
     public function datatables(Request $request)
     {
 
-        $tbl = \App\Model\datatables::datatables_category(@$request->all(), 'product');
+        $tbl = \App\Model\datatables::datatables_category(@$request->all(), 'restaurant');
         $DBT = datatables()->of($tbl);
         $DBT->escapeColumns(['*']); //อนุญาติให้ Return Html ถ้าเอาส่วนนี้ออกจะ Return Text
 
@@ -348,7 +362,7 @@ class Fti_Product_CategoryController extends Controller
         });
 
         $DBT->editColumn('cover_img_name', function ($col) {
-            $html = '<img src="' . asset('storage/app/public/image/category/product/' . $col->cover_img_name) . '" title="' . $col->cover_img_name . '" width="20%">';
+            $html = '<img src="' . asset('storage/app/public/image/category/restaurant/' . $col->cover_img_name) . '" title="' . $col->cover_img_name . '" width="20%">';
             return $html;
         });
 
@@ -368,19 +382,19 @@ class Fti_Product_CategoryController extends Controller
                 <div class="modal-dialog modal-dialog-centered modal-lg">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h4 class="modal-title" id="myModalLabel17">แก้ไขประเภทสินค้า : " ' . $col->cate_name . ' "</h4>
+                            <h4 class="modal-title" id="myModalLabel17">แก้ไขประเภทร้านอาหาร : " ' . $col->cate_name . ' "</h4>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
                         <form class="form form-horizontal" action="' . url('backend/' . $this->url . '/' . $col->id) . '" method="POST" enctype="multipart/form-data">
                             <input type="hidden" name="_token" value="' . csrf_token() . '">
                             <input name="_method" type="hidden" value="PUT">
-                            <input type="hidden" name="type" value="product">
+                            <input type="hidden" name="type" value="restaurant">
                             <div class="row">
                                 <div class="col-5">
                                     <div class="mb-1 row">
                                         <div class="col-sm-12">
-                                            <label class="col-form-label" for="cate_name">ประเภทสินค้า</label>
+                                            <label class="col-form-label" for="cate_name">ประเภทร้านอาหาร</label>
                                         </div>
                                         <div class="col-sm-12">
                                             <input type="text" id="cate_name" class="form-control" name="cate_name" value="' . $col->cate_name . '"/>
@@ -417,7 +431,7 @@ class Fti_Product_CategoryController extends Controller
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="myModalLabel120">ลบประเภทสินค้า</h5>
+                            <h5 class="modal-title" id="myModalLabel120">ลบประเภทร้านอาหาร</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">ยืนยันที่จะลบ " ' . $col->cate_name . '" หรือไม่?
@@ -435,5 +449,4 @@ class Fti_Product_CategoryController extends Controller
 
         return $DBT->make(true);
     }
-
 }
