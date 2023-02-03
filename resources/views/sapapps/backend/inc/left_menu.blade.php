@@ -82,13 +82,13 @@
                 </li>
                 <li class=" nav-item"><a class="d-flex align-items-center" href="#"><i data-feather="truck"></i><span class="menu-title text-truncate" data-i18n="car">รถยนต์</span></a>
                     <ul class="menu-content">
-                        <li><a class="d-flex align-items-center" href="app-invoice-list.html"><i data-feather="circle"></i><span class="menu-item text-truncate" data-i18n="List">ประเภทรถยนต์</span></a>
+                        <li><a class="d-flex align-items-center" href="{!! url('backend/mg_car_category') !!}"><i data-feather="circle"></i><span class="menu-item text-truncate" data-i18n="List">ประเภทรถยนต์</span></a>
                         </li>
-                        <li><a class="d-flex align-items-center" href="app-invoice-list.html"><i data-feather="circle"></i><span class="menu-item text-truncate" data-i18n="List">รายการ</span></a>
+                        <li><a class="d-flex align-items-center" href="{!! url('backend/mg_car') !!}"><i data-feather="circle"></i><span class="menu-item text-truncate" data-i18n="List">รายการ</span></a>
                         </li>
-                        <li><a class="d-flex align-items-center" href="app-invoice-list.html"><i data-feather="circle"></i><span class="menu-item text-truncate" data-i18n="List">จำนวนรถยนต์</span></a>
+                        <li><a class="d-flex align-items-center" href="{!! url('backend/mg_car') !!}"><i data-feather="circle"></i><span class="menu-item text-truncate" data-i18n="List">จำนวนรถยนต์</span></a>
                         </li>
-                        <li><a class="d-flex align-items-center" href="app-invoice-add.html"><i data-feather="circle"></i><span class="menu-item text-truncate" data-i18n="Add">เพิ่มข้อมูล</span></a>
+                        <li><a class="d-flex align-items-center" href="{!! url('backend/mg_car/create') !!}"><i data-feather="circle"></i><span class="menu-item text-truncate" data-i18n="Add">เพิ่มข้อมูล</span></a>
                         </li>
                     </ul>
                 </li>

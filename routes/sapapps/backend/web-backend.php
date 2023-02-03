@@ -522,3 +522,49 @@ Route::resource($url, $file.'Controller')
 ]);
 Route::post($url.'/datatables', array('uses' => $file.'Controller@datatables'))->name($url.'.datatables');
 Route::get($url.'/{id?}/delete', array('uses' => $file.'Controller@delete'))->name($url.'.delete');
+
+
+
+
+
+
+
+/*============================================ NEW
+### Home / restaurant
+/*============================================
+Note : restaurant
+===============================================*/
+$url = 'mg_car';
+$file = 'Mg_Car';
+Route::resource($url, $file.'Controller')
+->only([
+    'index', 'show', 'create', 'store', 'update', 'destroy', 'edit'
+])->except([
+
+]);
+Route::get($url.'/{id?}/stock', array('uses' => $file.'Controller@stock'))->name($url.'.stock');
+Route::post($url.'/{id?}/stock/input', array('uses' => $file.'Controller@stock_input'))->name($url.'.stock_input');
+Route::post($url.'/datatables', array('uses' => $file.'Controller@datatables'))->name($url.'.datatables');
+Route::get($url.'/{id?}/delete', array('uses' => $file.'Controller@delete'))->name($url.'.delete');
+### Image
+Route::get($url.'/{id?}/imageslide', array('uses' => $file.'Controller@imageslide'))->name($url.'.imageslide');
+Route::post($url.'/datatables_image', array('uses' => $file.'Controller@datatables_image'))->name($url.'.datatables_image');
+Route::post($url.'/{id?}/imageslide', array('uses' => $file.'Controller@image_store'))->name($url.'.image_store');
+Route::put($url.'/{id?}/imageslide/{id2?}', array('uses' => $file.'Controller@image_update'))->name($url.'.image_update');
+Route::get($url.'/{id?}/imageslide/{id2?}/delete', array('uses' => $file.'Controller@image_delete'))->name($url.'.image_delete');
+
+/*============================================ NEW
+### Home / car Category
+/*============================================
+Note : car Category
+===============================================*/
+$url = 'mg_car_category';
+$file = 'Mg_Car_Category';
+Route::resource($url, $file.'Controller')
+->only([
+    'index', 'show', 'create', 'store', 'update', 'destroy', 'edit'
+])->except([
+
+]);
+Route::post($url.'/datatables', array('uses' => $file.'Controller@datatables'))->name($url.'.datatables');
+Route::get($url.'/{id?}/delete', array('uses' => $file.'Controller@delete'))->name($url.'.delete');

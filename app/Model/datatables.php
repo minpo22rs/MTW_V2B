@@ -108,6 +108,21 @@ class datatables extends Model
 
         return $get;
     }
+    public static function datatables_car_img_slide($post = [], $id)
+    {
+        ### Request
+        //General::print_r_($post);exit;
+        foreach (@$post as $key => $value) {
+            ${$key} = $value;
+        }
+
+        $get = DB::table('mg_slide_img')
+            ->where('type', 'car')
+            ->where('ref_id', $id)
+            ->whereNull('deleted_at');
+
+        return $get;
+    }
 
     public static function datatables_attraction($post = [])
     {

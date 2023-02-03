@@ -10,14 +10,14 @@ use File;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
-class Mg_ProductController extends Controller
+class Mg_CarController extends Controller
 {
     public function __construct()
     {
-        $this->url = 'mg_product';
+        $this->url = 'mg_car';
         parent::__construct($this->url);
-        $this->path_file .= '.mg_product';
-        $this->menu = 'ข้อมูลสินค้า'; //\App\Model\Menu::get_menu_name($this->url)['menu'];
+        $this->path_file .= '.mg_car';
+        $this->menu = 'ข้อมูลรถยนต์'; //\App\Model\Menu::get_menu_name($this->url)['menu'];
         $this->menu_right = ''; //\App\Model\Menu::get_menu_name($this->url)['menu_right'];
     }
 
@@ -74,25 +74,25 @@ class Mg_ProductController extends Controller
         $this->validate(
             $request,
             [
-                'product_name' => 'required',
+                'car_name' => 'required',
                 'category' => 'required',
                 'short_descrip' => 'required',
                 'full_descrip' => 'required',
                 'unit_price' => 'required',
                 'sale_price' => 'required',
-                'product_img_name' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:5120',
+                'car_img_name' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:5120',
             ],
             [
-                'product_name.required' => 'ชื่อสินค้าจำเป็นต้องระบุข้อมูลค่ะ',
-                'category.required' => 'หมวดหมู่สินค้าจำเป็นต้องระบุข้อมูลค่ะ',
+                'car_name.required' => 'ชื่อรถยนต์จำเป็นต้องระบุข้อมูลค่ะ',
+                'category.required' => 'หมวดหมู่รถยนต์จำเป็นต้องระบุข้อมูลค่ะ',
                 'short_descrip.required' => 'รายละเอียดโดยย่อจำเป็นต้องระบุข้อมูลค่ะ',
                 'full_descrip.required' => 'รายละเอียดเต็มจำเป็นต้องระบุข้อมูลค่ะ',
                 'unit_price.required' => 'ราคาต่อหน่วยจำเป็นต้องระบุข้อมูลค่ะ',
                 'sale_price.required' => 'ราคาขายจำเป็นต้องระบุข้อมูลค่ะ',
-                'product_img_name.required' => 'Image จำเป็นต้องระบุข้อมูลค่ะ',
-                'product_img_name.image' => 'Image รบกวนใช้ไฟล์ประเภทรูปภาพเท่านั้นค่ะ',
-                'product_img_name.mimes' => 'Image รบกวนใช้ไฟล์ประเภทรูปภาพนามสกุล :values เท่านั้นค่ะ',
-                'product_img_name.max' => 'Image รบกวนใช้ไฟล์ขนาดไม่เกิน :max kilobytes ค่ะ',
+                'car_img_name.required' => 'Image จำเป็นต้องระบุข้อมูลค่ะ',
+                'car_img_name.image' => 'Image รบกวนใช้ไฟล์ประเภทรูปภาพเท่านั้นค่ะ',
+                'car_img_name.mimes' => 'Image รบกวนใช้ไฟล์ประเภทรูปภาพนามสกุล :values เท่านั้นค่ะ',
+                'car_img_name.max' => 'Image รบกวนใช้ไฟล์ขนาดไม่เกิน :max kilobytes ค่ะ',
             ]
         );
 
@@ -100,7 +100,7 @@ class Mg_ProductController extends Controller
 
         try {
             $data = [];
-            $columns = DB::getSchemaBuilder()->getColumnListing('mg_product');
+            $columns = DB::getSchemaBuilder()->getColumnListing('mg_car');
             $count_columns = count($columns);
             if ($columns) {
                 foreach ($columns as $key => $name) {
@@ -120,12 +120,12 @@ class Mg_ProductController extends Controller
             }
 
             // dd($data);
-            DB::table('mg_product')
+            DB::table('mg_car')
                 ->insert($data);
             $id = DB::getPdo()->lastInsertId();
 
-            if (@$product_img_name) {
-                $file = $request->file('product_img_name');
+            if (@$car_img_name) {
+                $file = $request->file('car_img_name');
                 if ($file) {
 
                     ### Parameters
@@ -150,7 +150,7 @@ class Mg_ProductController extends Controller
 
                     ### Path Real
                     $FileGen = $img_id . '.' . $file->getClientOriginalExtension();
-                    $Path_File = storage_path('app/public/image/products/');
+                    $Path_File = storage_path('app/public/image/cars/');
 
                     ### Resize - ก่อนย้ายจาก temp ไป Folder รูป
                     // $Path_File_Resize  = storage_path('app/public/image/image/tmp');
@@ -163,21 +163,21 @@ class Mg_ProductController extends Controller
                     $file->move($Path_File, $FileGen);
 
                     $data_img = [
-                        'product_img_name' => $FileGen,
-                        'product_img_name_upload' => $name_upload,
-                        'product_img_type' => $type,
-                        // 'product_img_size'        => $size,
-                        'product_img_width' => $width,
-                        'product_img_height' => $height,
+                        'car_img_name' => $FileGen,
+                        'car_img_name_upload' => $name_upload,
+                        'car_img_type' => $type,
+                        // 'car_img_size'        => $size,
+                        'car_img_width' => $width,
+                        'car_img_height' => $height,
                     ];
 
-                    DB::table('mg_product')->where('id', $img_id)->update($data_img);
+                    DB::table('mg_car')->where('id', $img_id)->update($data_img);
 
                 }
             }
 
             ## Log
-            \App\Model\Log\log_backend_login::log($this->url . '/เพิ่มข้อมูลสินค้า/ID: ' . $id);
+            \App\Model\Log\log_backend_login::log($this->url . '/เพิ่มข้อมูลรถยนต์/ID: ' . $id);
 
             DB::commit();
             return redirect()->to('backend/' . $this->url)->with('success', true)->with('message', ' Create Complete!');
@@ -185,7 +185,7 @@ class Mg_ProductController extends Controller
         } catch (\Exception $e) {
             DB::rollback();
             ## Log
-            $log_code = \App\Model\Log\log_backend_login::log($this->url . '/เพิ่มข้อมูลสินค้า/ID:/Error:' . $e->getMessage());
+            $log_code = \App\Model\Log\log_backend_login::log($this->url . '/เพิ่มข้อมูลรถยนต์/ID:/Error:' . $e->getMessage());
             // throw $e;
             // echo $e->getMessage();
             // return abort(404);
@@ -218,7 +218,7 @@ class Mg_ProductController extends Controller
             'menu' => $this->menu,
             '_title' => $this->menu,
             'id' => $id,
-            'rec' => \App\Model\dashboard::first_product($id),
+            'rec' => \App\Model\dashboard::first_car($id),
         ];
         return view($this->path_file . '.stock', $data);
     }
@@ -233,39 +233,39 @@ class Mg_ProductController extends Controller
             $request,
             [
                 'type' => 'required',
-                'product_stock' => 'required',
+                'car_stock' => 'required',
             ],
             [
                 'type.required' => 'กรุณาระบุประเภท stock ค่ะ',
-                'product_stock.required' => 'จำนวนสินค้าจำเป็นต้องระบุข้อมูลค่ะ',
+                'car_stock.required' => 'จำนวนรถยนต์จำเป็นต้องระบุข้อมูลค่ะ',
             ]
         );
 
         DB::beginTransaction();
 
         try {
-            $check = DB::table('dash_product')
-                ->where('product_id', $id)->first();
+            $check = DB::table('dash_car')
+                ->where('car_id', $id)->first();
             if ($type == 'in') {
-                $num = $check->product_stock + $product_stock;
+                $num = $check->car_stock + $car_stock;
             } else if ($type == 'out') {
-                $num = $check->product_stock - $product_stock;
+                $num = $check->car_stock - $car_stock;
             }
             if ($num >= 0) {
-                DB::table('dash_product')
-                    ->where('product_id', $id)
+                DB::table('dash_car')
+                    ->where('car_id', $id)
                     ->update([
-                        'product_stock' => $num,
+                        'car_stock' => $num,
                     ]);
                 ## Log
-                \App\Model\Log\log_product_stock::log($type, $product_stock, $id);
-                \App\Model\Log\log_backend_login::log($this->url . '/แก้ไข้ Stock Product/ID: ' . $id);
+                \App\Model\Log\log_car_stock::log($type, $car_stock, $id);
+                \App\Model\Log\log_backend_login::log($this->url . '/แก้ไข้ Stock car/ID: ' . $id);
 
                 DB::commit();
                 return redirect()->to('backend/' . $this->url . '/' . $id . '/stock')->with('success', true)->with('message', ' Complete!');
             } else if ($num < 0) {
                 ## Log
-                $log_code = \App\Model\Log\log_backend_login::log($this->url . '/แก้ไข้ Stock Product/ID:/Error:จำนวนสต๊อกไม่ถูกต้อง');
+                $log_code = \App\Model\Log\log_backend_login::log($this->url . '/แก้ไข้ Stock car/ID:/Error:จำนวนสต๊อกไม่ถูกต้อง');
 
                 DB::commit();
                 return redirect()->to('backend/' . $this->url . '/' . $id . '/stock')->with('fail', true)->with('message', 'กรุณาเช็คจำนวนสต๊อก');
@@ -275,7 +275,7 @@ class Mg_ProductController extends Controller
 
             DB::rollback();
             ## Log
-            $log_code = \App\Model\Log\log_backend_login::log($this->url . '/แก้ไข้ข้อมูล Product/ID:/Error:' . substr($e->getMessage(), 0, 180));
+            $log_code = \App\Model\Log\log_backend_login::log($this->url . '/แก้ไข้ข้อมูล car/ID:/Error:' . substr($e->getMessage(), 0, 180));
             // throw $e;
             // echo $e->getMessage();
             // return abort(404);
@@ -290,7 +290,7 @@ class Mg_ProductController extends Controller
             'menu' => $this->menu,
             '_title' => $this->menu,
             'id' => $id,
-            'rec' => \App\Model\dashboard::first_product($id),
+            'rec' => \App\Model\dashboard::first_car($id),
         ];
 
         if (Auth::user()->role == 'admin' || Auth::user()->role == 'merchandize') {
@@ -318,7 +318,7 @@ class Mg_ProductController extends Controller
         $this->validate(
             $request,
             [
-                'product_name' => 'required',
+                'car_name' => 'required',
                 'category' => 'required',
                 'short_descrip' => 'required',
                 'full_descrip' => 'required',
@@ -326,8 +326,8 @@ class Mg_ProductController extends Controller
                 'sale_price' => 'required',
             ],
             [
-                'product_name.required' => 'ชื่อสินค้าจำเป็นต้องระบุข้อมูลค่ะ',
-                'category.required' => 'หมวดหมู่สินค้าจำเป็นต้องระบุข้อมูลค่ะ',
+                'car_name.required' => 'ชื่อรถยนต์จำเป็นต้องระบุข้อมูลค่ะ',
+                'category.required' => 'หมวดหมู่รถยนต์จำเป็นต้องระบุข้อมูลค่ะ',
                 'short_descrip.required' => 'รายละเอียดโดยย่อจำเป็นต้องระบุข้อมูลค่ะ',
                 'full_descrip.required' => 'รายละเอียดเต็มจำเป็นต้องระบุข้อมูลค่ะ',
                 'unit_price.required' => 'ราคาต่อหน่วยจำเป็นต้องระบุข้อมูลค่ะ',
@@ -340,7 +340,7 @@ class Mg_ProductController extends Controller
         try {
 
             $data = [];
-            $columns = DB::getSchemaBuilder()->getColumnListing('mg_product');
+            $columns = DB::getSchemaBuilder()->getColumnListing('mg_car');
             $count_columns = count($columns);
             if ($columns) {
                 foreach ($columns as $key => $name) {
@@ -367,12 +367,12 @@ class Mg_ProductController extends Controller
             unset($data['id']);
 
             //dd($data);
-            DB::table('mg_product')
+            DB::table('mg_car')
                 ->where('id', $id)
                 ->update($data);
 
-            if (@$product_img_name) {
-                $file = $request->file('product_img_name');
+            if (@$car_img_name) {
+                $file = $request->file('car_img_name');
                 if ($file) {
 
                     ### Parameters
@@ -397,7 +397,7 @@ class Mg_ProductController extends Controller
                     ### Path Real
                     $FileGen = $img_id . '.' . $file->getClientOriginalExtension();
 
-                    $Path_File = storage_path('app/public/image/products/');
+                    $Path_File = storage_path('app/public/image/cars/');
 
                     ### Resize - ก่อนย้ายจาก temp ไป Folder รูป
                     // $Path_File_Resize  = storage_path('app/public/image/image/tmp');
@@ -410,20 +410,20 @@ class Mg_ProductController extends Controller
                     $file->move($Path_File, $FileGen);
 
                     $data_img = [
-                        'product_img_name' => $FileGen,
-                        'product_img_name_upload' => $name_upload,
-                        'product_img_type' => $type,
-                        'product_img_size' => $size,
-                        'product_img_width' => $width,
-                        'product_img_height' => $height,
+                        'car_img_name' => $FileGen,
+                        'car_img_name_upload' => $name_upload,
+                        'car_img_type' => $type,
+                        'car_img_size' => $size,
+                        'car_img_width' => $width,
+                        'car_img_height' => $height,
                     ];
-                    DB::table('mg_product')->where('id', $img_id)->update($data_img);
+                    DB::table('mg_car')->where('id', $img_id)->update($data_img);
 
                 }
             }
 
             ## Log
-            \App\Model\Log\log_backend_login::log($this->url . '/แก้ไข้ข้อมูลสินค้า/ID: ' . $id);
+            \App\Model\Log\log_backend_login::log($this->url . '/แก้ไข้ข้อมูลรถยนต์/ID: ' . $id);
 
             DB::commit();
             return redirect()->to('backend/' . $this->url . '/' . $id . '/edit')->with('success', true)->with('message', ' Update Complete!');
@@ -431,7 +431,7 @@ class Mg_ProductController extends Controller
         } catch (\Exception $e) {
             DB::rollback();
             ## Log
-            $log_code = \App\Model\Log\log_backend_login::log($this->url . '/แก้ไข้ข้อมูลสินค้า/ID:/Error:' . substr($e->getMessage(), 0, 180));
+            $log_code = \App\Model\Log\log_backend_login::log($this->url . '/แก้ไข้ข้อมูลรถยนต์/ID:/Error:' . substr($e->getMessage(), 0, 180));
             // throw $e;
             // echo $e->getMessage();
             // return abort(404);
@@ -455,7 +455,7 @@ class Mg_ProductController extends Controller
     {
         if (Auth::user()->role == 'admin' || Auth::user()->role == 'merchandize') {
             $data = [];
-            $columns = DB::getSchemaBuilder()->getColumnListing('mg_product');
+            $columns = DB::getSchemaBuilder()->getColumnListing('mg_car');
             $count_columns = count($columns);
             if ($columns) {
                 foreach ($columns as $key => $name) {
@@ -469,11 +469,11 @@ class Mg_ProductController extends Controller
                 }
             }
             //dd($data);
-            DB::table('mg_product')
+            DB::table('mg_car')
                 ->where('id', $id)
                 ->update($data);
             ## Log
-            \App\Model\Log\log_backend_login::log('ลบข้อมูลสินค้า/ID:' . $id);
+            \App\Model\Log\log_backend_login::log('ลบข้อมูลรถยนต์/ID:' . $id);
             return back()->with('success', true)->with('message', ' Delete Complete!');
         } else {
             return abort(403, 'Unauthorized action.');
@@ -482,7 +482,7 @@ class Mg_ProductController extends Controller
 
     public function datatables(Request $request)
     {
-        $tbl = \App\Model\datatables::datatables_product(@$request->all());
+        $tbl = \App\Model\datatables::datatables_car(@$request->all());
         $DBT = datatables()->of($tbl);
         $DBT->escapeColumns(['*']); //อนุญาติให้ Return Html ถ้าเอาส่วนนี้ออกจะ Return Text
 
@@ -503,8 +503,8 @@ class Mg_ProductController extends Controller
             return $html;
         });
 
-        // $DBT->editColumn('product_type', function($col){
-        //     $html = \App\Model\dashboard::type_name($col->product_type);
+        // $DBT->editColumn('car_type', function($col){
+        //     $html = \App\Model\dashboard::type_name($col->car_type);
         //     return $html;
         // });
 
@@ -513,8 +513,8 @@ class Mg_ProductController extends Controller
             return $html;
         });
 
-        $DBT->editColumn('product_img_name', function ($col) {
-            $html = '<img src="' . asset('storage/app/public/image/products/' . $col->product_img_name) . '" title="' . $col->product_img_name . '" width="20%">';
+        $DBT->editColumn('car_img_name', function ($col) {
+            $html = '<img src="' . asset('storage/app/public/image/cars/' . $col->car_img_name) . '" title="' . $col->car_img_name . '" width="20%">';
             return $html;
         });
 
@@ -535,10 +535,10 @@ class Mg_ProductController extends Controller
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="myModalLabel120">ลบสินค้า</h5>
+                            <h5 class="modal-title" id="myModalLabel120">ลบรถยนต์</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <div class="modal-body">ยืนยันที่จะลบ " ' . $col->product_name . '" หรือไม่?
+                        <div class="modal-body">ยืนยันที่จะลบ " ' . $col->car_name . '" หรือไม่?
                         </div>
                         <div class="modal-footer">
                             <form action="' . url('backend/' . $this->url . '/' . $col->id . '/delete') . '" method="get">
@@ -557,12 +557,12 @@ class Mg_ProductController extends Controller
     public function imageslide($id)
     {
 
-        $product = \App\Model\dashboard::first_product($id);
+        $car = \App\Model\dashboard::first_car($id);
         $data = [
             'url' => $this->url,
             'menu' => $this->menu,
             '_title' => $this->menu,
-            'product' => $product->product_name,
+            'car' => $car->car_name,
             'id' => $id,
         ];
         return view($this->path_file . '.imageslide', $data);
@@ -653,7 +653,7 @@ class Mg_ProductController extends Controller
 
                     ### Path Real
                     $FileGen = $img_id . '.' . $file->getClientOriginalExtension();
-                    $Path_File = storage_path('app/public/image/slide/product/');
+                    $Path_File = storage_path('app/public/image/slide/car/');
 
                     ### Resize - ก่อนย้ายจาก temp ไป Folder รูป
                     // $Path_File_Resize  = storage_path('app/public/image/image/tmp');
@@ -679,7 +679,7 @@ class Mg_ProductController extends Controller
             }
 
             ## Log
-            \App\Model\Log\log_backend_login::log($this->url . '/เพิ่มรูปสไลด์สินค้า/ID: ' . $id);
+            \App\Model\Log\log_backend_login::log($this->url . '/เพิ่มรูปสไลด์รถยนต์/ID: ' . $id);
 
             DB::commit();
             return redirect()->to('backend/' . $this->url . '/' . $ref_id . '/imageslide/')->with('success', true)->with('message', ' Create Complete!');
@@ -687,7 +687,7 @@ class Mg_ProductController extends Controller
         } catch (\Exception $e) {
             DB::rollback();
             ## Log
-            $log_code = \App\Model\Log\log_backend_login::log($this->url . '/เพิ่มรูปสไลด์สินค้า/ID:/Error:' . substr($e->getMessage(), 0, 180));
+            $log_code = \App\Model\Log\log_backend_login::log($this->url . '/เพิ่มรูปสไลด์รถยนต์/ID:/Error:' . substr($e->getMessage(), 0, 180));
             // throw $e;
             // echo $e->getMessage();
             // return abort(404);
@@ -700,19 +700,19 @@ class Mg_ProductController extends Controller
     {
         // dd($id);
         $img = DB::table('mg_slide_img')->where('id', $id)->first();
-        Storage::delete('image/slide/product/' . $img->slide_img_name);
+        Storage::delete('image/slide/car/' . $img->slide_img_name);
         DB::table('mg_slide_img')
             ->where('id', $id)
             ->delete();
 
         ## Log
-        \App\Model\Log\log_backend_login::log('ลบรูปภาพสินค้า/ID:' . $id);
+        \App\Model\Log\log_backend_login::log('ลบรูปภาพรถยนต์/ID:' . $id);
         return back()->with('success', true)->with('message', ' Delete Complete!');
     }
 
     public function datatables_image(Request $request)
     {
-        $tbl = \App\Model\datatables::datatables_product_img_slide(@$request->all(), $request->get('id'));
+        $tbl = \App\Model\datatables::datatables_car_img_slide(@$request->all(), $request->get('id'));
         $DBT = datatables()->of($tbl);
         $DBT->escapeColumns(['*']); //อนุญาติให้ Return Html ถ้าเอาส่วนนี้ออกจะ Return Text
 
@@ -722,7 +722,7 @@ class Mg_ProductController extends Controller
         });
 
         $DBT->editColumn('slide_img_name', function ($col) {
-            $html = '<img src="' . asset('storage/app/public/image/slide/product/' . $col->slide_img_name) . '" title="' . $col->slide_img_name . '" width="20%">';
+            $html = '<img src="' . asset('storage/app/public/image/slide/car/' . $col->slide_img_name) . '" title="' . $col->slide_img_name . '" width="20%">';
             return $html;
         });
 
@@ -741,7 +741,7 @@ class Mg_ProductController extends Controller
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="myModalLabel120">ลบสินค้า</h5>
+                            <h5 class="modal-title" id="myModalLabel120">ลบรถยนต์</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">ยืนยันที่จะลบ " ' . $col->id . '" หรือไม่?
