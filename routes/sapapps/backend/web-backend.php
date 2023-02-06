@@ -383,8 +383,8 @@ Route::get($url.'/{id?}/render', array('uses' => $file.'Controller@show'))->name
 /*============================================
 Note : Product
 ===============================================*/
-$url = 'mg_product';
-$file = 'Mg_Product';
+$url = 'mtw_v2_product';
+$file = 'Mtw_v2_Product';
 Route::resource($url, $file.'Controller')
 ->only([
     'index', 'show', 'create', 'store', 'update', 'destroy', 'edit'
@@ -408,8 +408,8 @@ Route::get($url.'/{id?}/imageslide/{id2?}/delete', array('uses' => $file.'Contro
 /*============================================
 Note : Product Category
 ===============================================*/
-$url = 'mg_product_category';
-$file = 'Mg_Product_Category';
+$url = 'mtw_v2_product_category';
+$file = 'Mtw_v2_Product_Category';
 Route::resource($url, $file.'Controller')
 ->only([
     'index', 'show', 'create', 'store', 'update', 'destroy', 'edit'
@@ -424,8 +424,8 @@ Route::get($url.'/{id?}/delete', array('uses' => $file.'Controller@delete'))->na
 /*============================================
 Note : Attraction
 ===============================================*/
-$url = 'mg_attraction';
-$file = 'Mg_Attraction';
+$url = 'mtw_v2_attraction';
+$file = 'Mtw_v2_Attraction';
 Route::resource($url, $file.'Controller')
 ->only([
     'index', 'show', 'create', 'store', 'update', 'destroy', 'edit'
@@ -443,8 +443,8 @@ Route::get($url.'/{id?}/delete', array('uses' => $file.'Controller@delete'))->na
 /*============================================
 Note : Hotel
 ===============================================*/
-$url = 'mg_hotel';
-$file = 'Mg_Hotel';
+$url = 'mtw_v2_hotel';
+$file = 'Mtw_v2_Hotel';
 Route::resource($url, $file.'Controller')
 ->only([
     'index', 'show', 'create', 'store', 'update', 'destroy', 'edit'
@@ -467,8 +467,8 @@ Route::get($url.'/{id?}/imageslide/{id2?}/delete', array('uses' => $file.'Contro
 /*============================================
 Note : Hotel Category
 ===============================================*/
-$url = 'mg_hotel_category';
-$file = 'Mg_hotel_Category';
+$url = 'mtw_v2_hotel_category';
+$file = 'Mtw_v2_hotel_Category';
 Route::resource($url, $file.'Controller')
 ->only([
     'index', 'show', 'create', 'store', 'update', 'destroy', 'edit'
@@ -488,8 +488,8 @@ Route::get($url.'/{id?}/delete', array('uses' => $file.'Controller@delete'))->na
 /*============================================
 Note : restaurant
 ===============================================*/
-$url = 'mg_restaurant';
-$file = 'Mg_Restaurant';
+$url = 'mtw_v2_restaurant';
+$file = 'Mtw_v2_Restaurant';
 Route::resource($url, $file.'Controller')
 ->only([
     'index', 'show', 'create', 'store', 'update', 'destroy', 'edit'
@@ -512,8 +512,8 @@ Route::get($url.'/{id?}/imageslide/{id2?}/delete', array('uses' => $file.'Contro
 /*============================================
 Note : restaurant Category
 ===============================================*/
-$url = 'mg_restaurant_category';
-$file = 'Mg_restaurant_Category';
+$url = 'mtw_v2_restaurant_category';
+$file = 'Mtw_v2_restaurant_Category';
 Route::resource($url, $file.'Controller')
 ->only([
     'index', 'show', 'create', 'store', 'update', 'destroy', 'edit'
@@ -534,8 +534,8 @@ Route::get($url.'/{id?}/delete', array('uses' => $file.'Controller@delete'))->na
 /*============================================
 Note : restaurant
 ===============================================*/
-$url = 'mg_car';
-$file = 'Mg_Car';
+$url = 'mtw_v2_car';
+$file = 'Mtw_v2_Car';
 Route::resource($url, $file.'Controller')
 ->only([
     'index', 'show', 'create', 'store', 'update', 'destroy', 'edit'
@@ -558,8 +558,8 @@ Route::get($url.'/{id?}/imageslide/{id2?}/delete', array('uses' => $file.'Contro
 /*============================================
 Note : car Category
 ===============================================*/
-$url = 'mg_car_category';
-$file = 'Mg_Car_Category';
+$url = 'mtw_v2_car_category';
+$file = 'Mtw_v2_Car_Category';
 Route::resource($url, $file.'Controller')
 ->only([
     'index', 'show', 'create', 'store', 'update', 'destroy', 'edit'

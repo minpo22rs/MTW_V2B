@@ -16,7 +16,7 @@ class datatables extends Model
             ${$key} = $value;
         }
 
-        $get = DB::table('mg_category')
+        $get = DB::table('mtw_v2_category')
             ->where('type', $type)
             ->whereNull('deleted_at');
 
@@ -43,7 +43,7 @@ class datatables extends Model
             ${$key} = $value;
         }
 
-        $get = DB::table('mg_product')
+        $get = DB::table('mtw_v2_product')
             ->whereNull('deleted_at');
 
         return $get;
@@ -56,7 +56,7 @@ class datatables extends Model
             ${$key} = $value;
         }
 
-        $get = DB::table('mg_hotels')
+        $get = DB::table('mtw_v2_hotels')
             ->whereNull('deleted_at');
 
         return $get;
@@ -70,7 +70,7 @@ class datatables extends Model
             ${$key} = $value;
         }
 
-        $get = DB::table('mg_slide_img')
+        $get = DB::table('mtw_v2_slide_img')
             ->where('type', 'product')
             ->where('ref_id', $id)
             ->whereNull('deleted_at');
@@ -86,7 +86,7 @@ class datatables extends Model
             ${$key} = $value;
         }
 
-        $get = DB::table('mg_slide_img')
+        $get = DB::table('mtw_v2_slide_img')
             ->where('type', 'hotel')
             ->where('ref_id', $id)
             ->whereNull('deleted_at');
@@ -101,7 +101,7 @@ class datatables extends Model
             ${$key} = $value;
         }
 
-        $get = DB::table('mg_slide_img')
+        $get = DB::table('mtw_v2_slide_img')
             ->where('type', 'restaurant')
             ->where('ref_id', $id)
             ->whereNull('deleted_at');
@@ -116,7 +116,7 @@ class datatables extends Model
             ${$key} = $value;
         }
 
-        $get = DB::table('mg_slide_img')
+        $get = DB::table('mtw_v2_slide_img')
             ->where('type', 'car')
             ->where('ref_id', $id)
             ->whereNull('deleted_at');
@@ -130,7 +130,7 @@ class datatables extends Model
             ${$key} = $value;
         }
 
-        $get = DB::table('mg_attractions')
+        $get = DB::table('mtw_v2_attractions')
             ->whereNull('deleted_at');
 
         return $get;

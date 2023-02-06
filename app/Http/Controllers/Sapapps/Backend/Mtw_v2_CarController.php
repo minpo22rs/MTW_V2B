@@ -2,24 +2,26 @@
 
 namespace App\Http\Controllers\Sapapps\Backend;
 
+use App\Helpers\General;
 use App\Http\Controllers\Controller;
+use Auth;
+use DB;
+use File;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
-class Mg_RestaurantController extends Controller
+class Mtw_v2_CarController extends Controller
 {
-
     public function __construct()
     {
-        $this->url = 'mg_restaurant';
-        $this->table = 'mg_restaurants';
+        $this->url = 'mtw_v2_car';
+        $this->table = 'mtw_v2_cars';
         parent::__construct($this->url);
-        $this->path_file .= '.mg_restaurant';
-        $this->menu = 'ข้อมูลร้านอาหาร'; //\App\Model\Menu::get_menu_name($this->url)['menu'];
+        $this->path_file .= '.mtw_v2_car';
+        $this->menu = 'ข้อมูลรถยนต์'; //\App\Model\Menu::get_menu_name($this->url)['menu'];
         $this->menu_right = ''; //\App\Model\Menu::get_menu_name($this->url)['menu_right'];
     }
+
     /**
      * Display a listing of the resource.
      *
@@ -47,6 +49,7 @@ class Mg_RestaurantController extends Controller
             'menu' => $this->menu,
             '_title' => $this->menu,
         ];
+
         if (Auth::user()->role == 'admin' || Auth::user()->role == 'merchandize') {
             return view($this->path_file . '.create', $data);
         } else {
@@ -72,25 +75,25 @@ class Mg_RestaurantController extends Controller
         $this->validate(
             $request,
             [
-                'restaurant_name' => 'required',
+                'car_name' => 'required',
                 'category' => 'required',
                 'short_descrip' => 'required',
                 'full_descrip' => 'required',
                 'unit_price' => 'required',
                 'sale_price' => 'required',
-                'restaurant_img_name' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:5120',
+                'car_img_name' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:5120',
             ],
             [
-                'restaurant_name.required' => 'ชื่อร้านอาหารจำเป็นต้องระบุข้อมูลค่ะ',
-                'category.required' => 'หมวดหมู่ร้านอาหารจำเป็นต้องระบุข้อมูลค่ะ',
+                'car_name.required' => 'ชื่อรถยนต์จำเป็นต้องระบุข้อมูลค่ะ',
+                'category.required' => 'หมวดหมู่รถยนต์จำเป็นต้องระบุข้อมูลค่ะ',
                 'short_descrip.required' => 'รายละเอียดโดยย่อจำเป็นต้องระบุข้อมูลค่ะ',
                 'full_descrip.required' => 'รายละเอียดเต็มจำเป็นต้องระบุข้อมูลค่ะ',
                 'unit_price.required' => 'ราคาต่อหน่วยจำเป็นต้องระบุข้อมูลค่ะ',
                 'sale_price.required' => 'ราคาขายจำเป็นต้องระบุข้อมูลค่ะ',
-                'restaurant_img_name.required' => 'Image จำเป็นต้องระบุข้อมูลค่ะ',
-                'restaurant_img_name.image' => 'Image รบกวนใช้ไฟล์ประเภทรูปภาพเท่านั้นค่ะ',
-                'restaurant_img_name.mimes' => 'Image รบกวนใช้ไฟล์ประเภทรูปภาพนามสกุล :values เท่านั้นค่ะ',
-                'restaurant_img_name.max' => 'Image รบกวนใช้ไฟล์ขนาดไม่เกิน :max kilobytes ค่ะ',
+                'car_img_name.required' => 'Image จำเป็นต้องระบุข้อมูลค่ะ',
+                'car_img_name.image' => 'Image รบกวนใช้ไฟล์ประเภทรูปภาพเท่านั้นค่ะ',
+                'car_img_name.mimes' => 'Image รบกวนใช้ไฟล์ประเภทรูปภาพนามสกุล :values เท่านั้นค่ะ',
+                'car_img_name.max' => 'Image รบกวนใช้ไฟล์ขนาดไม่เกิน :max kilobytes ค่ะ',
             ]
         );
 
@@ -98,7 +101,7 @@ class Mg_RestaurantController extends Controller
 
         try {
             $data = [];
-            $columns = DB::getSchemaBuilder()->getColumnListing('mg_restaurants');
+            $columns = DB::getSchemaBuilder()->getColumnListing($this->table);
             $count_columns = count($columns);
             if ($columns) {
                 foreach ($columns as $key => $name) {
@@ -118,12 +121,12 @@ class Mg_RestaurantController extends Controller
             }
 
             // dd($data);
-            DB::table('mg_restaurants')
+            DB::table($this->table)
                 ->insert($data);
             $id = DB::getPdo()->lastInsertId();
 
-            if (@$restaurant_img_name) {
-                $file = $request->file('restaurant_img_name');
+            if (@$car_img_name) {
+                $file = $request->file('car_img_name');
                 if ($file) {
 
                     ### Parameters
@@ -148,7 +151,7 @@ class Mg_RestaurantController extends Controller
 
                     ### Path Real
                     $FileGen = $img_id . '.' . $file->getClientOriginalExtension();
-                    $Path_File = storage_path('app/public/image/restaurants/');
+                    $Path_File = storage_path('app/public/image/cars/');
 
                     ### Resize - ก่อนย้ายจาก temp ไป Folder รูป
                     // $Path_File_Resize  = storage_path('app/public/image/image/tmp');
@@ -161,29 +164,30 @@ class Mg_RestaurantController extends Controller
                     $file->move($Path_File, $FileGen);
 
                     $data_img = [
-                        'restaurant_img_name' => $FileGen,
-                        'restaurant_img_name_upload' => $name_upload,
-                        'restaurant_img_type' => $type,
-                        // 'restaurant_img_size'        => $size,
-                        'restaurant_img_width' => $width,
-                        'restaurant_img_height' => $height,
+                        'car_img_name' => $FileGen,
+                        'car_img_name_upload' => $name_upload,
+                        'car_img_type' => $type,
+                        // 'car_img_size'        => $size,
+                        'car_img_width' => $width,
+                        'car_img_height' => $height,
                     ];
 
-                    DB::table('mg_restaurants')->where('id', $img_id)->update($data_img);
+                    DB::table($this->table)->where('id', $img_id)->update($data_img);
 
                 }
             }
 
             ## Log
-            \App\Model\Log\log_backend_login::log($this->url . '/เพิ่มข้อมูลร้านอาหาร/ID: ' . $id);
+            \App\Model\Log\log_backend_login::log($this->url . '/เพิ่มข้อมูลรถยนต์/ID: ' . $id);
 
             DB::commit();
             return redirect()->to('backend/' . $this->url)->with('success', true)->with('message', ' Create Complete!');
 
         } catch (\Exception $e) {
+            dd($e);
             DB::rollback();
             ## Log
-            $log_code = \App\Model\Log\log_backend_login::log($this->url . '/เพิ่มข้อมูลร้านอาหาร/ID:/Error:' . $e->getMessage());
+            $log_code = \App\Model\Log\log_backend_login::log($this->url . '/เพิ่มข้อมูลรถยนต์/ID:/Error:' . $e->getMessage());
             // throw $e;
             // echo $e->getMessage();
             // return abort(404);
@@ -208,6 +212,79 @@ class Mg_RestaurantController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+
+    public function stock($id)
+    {
+        $data = [
+            'url' => $this->url,
+            'menu' => $this->menu,
+            '_title' => $this->menu,
+            'id' => $id,
+            'rec' => \App\Model\dashboard::first_all($id,$this->table),
+        ];
+        return view($this->path_file . '.stock', $data);
+    }
+
+    // public function stock_input(Request $request)
+    // {
+    //     foreach ($request->all() as $key => $value) {
+    //         ${$key} = $value;
+    //     }
+
+    //     $this->validate(
+    //         $request,
+    //         [
+    //             'type' => 'required',
+    //             'car_stock' => 'required',
+    //         ],
+    //         [
+    //             'type.required' => 'กรุณาระบุประเภท stock ค่ะ',
+    //             'car_stock.required' => 'จำนวนรถยนต์จำเป็นต้องระบุข้อมูลค่ะ',
+    //         ]
+    //     );
+
+    //     DB::beginTransaction();
+
+    //     try {
+    //         $check = DB::table('dash_car')
+    //             ->where('car_id', $id)->first();
+    //         if ($type == 'in') {
+    //             $num = $check->car_stock + $car_stock;
+    //         } else if ($type == 'out') {
+    //             $num = $check->car_stock - $car_stock;
+    //         }
+    //         if ($num >= 0) {
+    //             DB::table('dash_car')
+    //                 ->where('car_id', $id)
+    //                 ->update([
+    //                     'car_stock' => $num,
+    //                 ]);
+    //             ## Log
+    //             \App\Model\Log\log_product_stock::log($type, $car_stock, $id);
+    //             \App\Model\Log\log_backend_login::log($this->url . '/แก้ไข้ Stock car/ID: ' . $id);
+
+    //             DB::commit();
+    //             return redirect()->to('backend/' . $this->url . '/' . $id . '/stock')->with('success', true)->with('message', ' Complete!');
+    //         } else if ($num < 0) {
+    //             ## Log
+    //             $log_code = \App\Model\Log\log_backend_login::log($this->url . '/แก้ไข้ Stock car/ID:/Error:จำนวนสต๊อกไม่ถูกต้อง');
+
+    //             DB::commit();
+    //             return redirect()->to('backend/' . $this->url . '/' . $id . '/stock')->with('fail', true)->with('message', 'กรุณาเช็คจำนวนสต๊อก');
+    //         }
+
+    //     } catch (\Exception $e) {
+
+    //         DB::rollback();
+    //         ## Log
+    //         $log_code = \App\Model\Log\log_backend_login::log($this->url . '/แก้ไข้ข้อมูล car/ID:/Error:' . substr($e->getMessage(), 0, 180));
+    //         // throw $e;
+    //         // echo $e->getMessage();
+    //         // return abort(404);
+    //         return back()->withInput()->with('fail', true)->with('message', 'ไม่สามารถทำรายการได้ในขณะนี้ กรุณาติดต่อผู้ดูแลระบบ รหัส:' . $log_code);
+    //     }
+    // }
+
     public function edit($id)
     {
         $data = [
@@ -215,7 +292,7 @@ class Mg_RestaurantController extends Controller
             'menu' => $this->menu,
             '_title' => $this->menu,
             'id' => $id,
-            'rec' => \App\Model\dashboard::first_all($id,$this->table ),
+            'rec' => \App\Model\dashboard::first_all($id,$this->table),
         ];
 
         if (Auth::user()->role == 'admin' || Auth::user()->role == 'merchandize') {
@@ -243,7 +320,7 @@ class Mg_RestaurantController extends Controller
         $this->validate(
             $request,
             [
-                'restaurant_name' => 'required',
+                'car_name' => 'required',
                 'category' => 'required',
                 'short_descrip' => 'required',
                 'full_descrip' => 'required',
@@ -251,8 +328,8 @@ class Mg_RestaurantController extends Controller
                 'sale_price' => 'required',
             ],
             [
-                'restaurant_name.required' => 'ชื่อร้านอาหารจำเป็นต้องระบุข้อมูลค่ะ',
-                'category.required' => 'หมวดหมู่ร้านอาหารจำเป็นต้องระบุข้อมูลค่ะ',
+                'car_name.required' => 'ชื่อรถยนต์จำเป็นต้องระบุข้อมูลค่ะ',
+                'category.required' => 'หมวดหมู่รถยนต์จำเป็นต้องระบุข้อมูลค่ะ',
                 'short_descrip.required' => 'รายละเอียดโดยย่อจำเป็นต้องระบุข้อมูลค่ะ',
                 'full_descrip.required' => 'รายละเอียดเต็มจำเป็นต้องระบุข้อมูลค่ะ',
                 'unit_price.required' => 'ราคาต่อหน่วยจำเป็นต้องระบุข้อมูลค่ะ',
@@ -265,7 +342,7 @@ class Mg_RestaurantController extends Controller
         try {
 
             $data = [];
-            $columns = DB::getSchemaBuilder()->getColumnListing('mg_restaurants');
+            $columns = DB::getSchemaBuilder()->getColumnListing($this->table);
             $count_columns = count($columns);
             if ($columns) {
                 foreach ($columns as $key => $name) {
@@ -292,12 +369,12 @@ class Mg_RestaurantController extends Controller
             unset($data['id']);
 
             //dd($data);
-            DB::table('mg_restaurants')
+            DB::table($this->table)
                 ->where('id', $id)
                 ->update($data);
 
-            if (@$restaurant_img_name) {
-                $file = $request->file('restaurant_img_name');
+            if (@$car_img_name) {
+                $file = $request->file('car_img_name');
                 if ($file) {
 
                     ### Parameters
@@ -322,7 +399,7 @@ class Mg_RestaurantController extends Controller
                     ### Path Real
                     $FileGen = $img_id . '.' . $file->getClientOriginalExtension();
 
-                    $Path_File = storage_path('app/public/image/restaurants/');
+                    $Path_File = storage_path('app/public/image/cars/');
 
                     ### Resize - ก่อนย้ายจาก temp ไป Folder รูป
                     // $Path_File_Resize  = storage_path('app/public/image/image/tmp');
@@ -335,28 +412,29 @@ class Mg_RestaurantController extends Controller
                     $file->move($Path_File, $FileGen);
 
                     $data_img = [
-                        'restaurant_img_name' => $FileGen,
-                        'restaurant_img_name_upload' => $name_upload,
-                        'restaurant_img_type' => $type,
-                        'restaurant_img_size' => $size,
-                        'restaurant_img_width' => $width,
-                        'restaurant_img_height' => $height,
+                        'car_img_name' => $FileGen,
+                        'car_img_name_upload' => $name_upload,
+                        'car_img_type' => $type,
+                        'car_img_size' => $size,
+                        'car_img_width' => $width,
+                        'car_img_height' => $height,
                     ];
-                    DB::table('mg_restaurants')->where('id', $img_id)->update($data_img);
+                    DB::table($this->table)->where('id', $img_id)->update($data_img);
 
                 }
             }
 
             ## Log
-            \App\Model\Log\log_backend_login::log($this->url . '/แก้ไข้ข้อมูลร้านอาหาร/ID: ' . $id);
+            \App\Model\Log\log_backend_login::log($this->url . '/แก้ไข้ข้อมูลรถยนต์/ID: ' . $id);
 
             DB::commit();
             return redirect()->to('backend/' . $this->url . '/' . $id . '/edit')->with('success', true)->with('message', ' Update Complete!');
 
         } catch (\Exception $e) {
+
             DB::rollback();
             ## Log
-            $log_code = \App\Model\Log\log_backend_login::log($this->url . '/แก้ไข้ข้อมูลร้านอาหาร/ID:/Error:' . substr($e->getMessage(), 0, 180));
+            $log_code = \App\Model\Log\log_backend_login::log($this->url . '/แก้ไข้ข้อมูลรถยนต์/ID:/Error:' . substr($e->getMessage(), 0, 180));
             // throw $e;
             // echo $e->getMessage();
             // return abort(404);
@@ -364,6 +442,7 @@ class Mg_RestaurantController extends Controller
 
         }
     }
+
     /**
      * Remove the specified resource from storage.
      *
@@ -374,11 +453,12 @@ class Mg_RestaurantController extends Controller
     {
         //
     }
+
     public function delete($id)
     {
         if (Auth::user()->role == 'admin' || Auth::user()->role == 'merchandize') {
             $data = [];
-            $columns = DB::getSchemaBuilder()->getColumnListing('mg_restaurants');
+            $columns = DB::getSchemaBuilder()->getColumnListing($this->table);
             $count_columns = count($columns);
             if ($columns) {
                 foreach ($columns as $key => $name) {
@@ -392,19 +472,20 @@ class Mg_RestaurantController extends Controller
                 }
             }
             //dd($data);
-            DB::table('mg_restaurants')
+            DB::table('mtw_v2_car')
                 ->where('id', $id)
                 ->update($data);
             ## Log
-            \App\Model\Log\log_backend_login::log('ลบข้อมูลร้านอาหาร/ID:' . $id);
+            \App\Model\Log\log_backend_login::log('ลบข้อมูลรถยนต์/ID:' . $id);
             return back()->with('success', true)->with('message', ' Delete Complete!');
         } else {
             return abort(403, 'Unauthorized action.');
         }
     }
+
     public function datatables(Request $request)
     {
-        $tbl = \App\Model\datatables::datatables_all(@$request->all(),$this->table );
+        $tbl = \App\Model\datatables::datatables_all(@$request->all(),$this->table);
         $DBT = datatables()->of($tbl);
         $DBT->escapeColumns(['*']); //อนุญาติให้ Return Html ถ้าเอาส่วนนี้ออกจะ Return Text
 
@@ -425,8 +506,8 @@ class Mg_RestaurantController extends Controller
             return $html;
         });
 
-        // $DBT->editColumn('restaurant_type', function($col){
-        //     $html = \App\Model\dashboard::type_name($col->restaurant_type);
+        // $DBT->editColumn('car_type', function($col){
+        //     $html = \App\Model\dashboard::type_name($col->car_type);
         //     return $html;
         // });
 
@@ -435,8 +516,8 @@ class Mg_RestaurantController extends Controller
             return $html;
         });
 
-        $DBT->editColumn('restaurant_img_name', function ($col) {
-            $html = '<img src="' . asset('storage/app/public/image/restaurants/' . $col->restaurant_img_name) . '" title="' . $col->restaurant_img_name . '" width="20%">';
+        $DBT->editColumn('car_img_name', function ($col) {
+            $html = '<img src="' . asset('storage/app/public/image/cars/' . $col->car_img_name) . '" title="' . $col->car_img_name . '" width="20%">';
             return $html;
         });
 
@@ -457,10 +538,10 @@ class Mg_RestaurantController extends Controller
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="myModalLabel120">ลบร้านอาหาร</h5>
+                            <h5 class="modal-title" id="myModalLabel120">ลบรถยนต์</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <div class="modal-body">ยืนยันที่จะลบ " ' . $col->restaurant_name . '" หรือไม่?
+                        <div class="modal-body">ยืนยันที่จะลบ " ' . $col->car_name . '" หรือไม่?
                         </div>
                         <div class="modal-footer">
                             <form action="' . url('backend/' . $this->url . '/' . $col->id . '/delete') . '" method="get">
@@ -479,12 +560,12 @@ class Mg_RestaurantController extends Controller
     public function imageslide($id)
     {
 
-        $restaurant = \App\Model\dashboard::first_all($id,$this->table );
+        $car = \App\Model\dashboard::first_all($id,$this->table);
         $data = [
             'url' => $this->url,
             'menu' => $this->menu,
             '_title' => $this->menu,
-            'restaurant' => $restaurant->restaurant_name,
+            'car' => $car->car_name,
             'id' => $id,
         ];
         return view($this->path_file . '.imageslide', $data);
@@ -520,7 +601,7 @@ class Mg_RestaurantController extends Controller
 
         try {
             $data = [];
-            $columns = DB::getSchemaBuilder()->getColumnListing('mg_slide_img');
+            $columns = DB::getSchemaBuilder()->getColumnListing('mtw_v2_slide_img');
             $count_columns = count($columns);
             if ($columns) {
                 foreach ($columns as $key => $name) {
@@ -546,7 +627,7 @@ class Mg_RestaurantController extends Controller
             }
 
             //dd($data);
-            DB::table('mg_slide_img')
+            DB::table('mtw_v2_slide_img')
                 ->insert($data);
             $id = DB::getPdo()->lastInsertId();
 
@@ -575,7 +656,7 @@ class Mg_RestaurantController extends Controller
 
                     ### Path Real
                     $FileGen = $img_id . '.' . $file->getClientOriginalExtension();
-                    $Path_File = storage_path('app/public/image/slide/restaurant/');
+                    $Path_File = storage_path('app/public/image/slide/car/');
 
                     ### Resize - ก่อนย้ายจาก temp ไป Folder รูป
                     // $Path_File_Resize  = storage_path('app/public/image/image/tmp');
@@ -595,13 +676,13 @@ class Mg_RestaurantController extends Controller
                         'slide_img_width' => $width,
                         'slide_img_height' => $height,
                     ];
-                    DB::table('mg_slide_img')->where('id', $img_id)->update($data_img);
+                    DB::table('mtw_v2_slide_img')->where('id', $img_id)->update($data_img);
 
                 }
             }
 
             ## Log
-            \App\Model\Log\log_backend_login::log($this->url . '/เพิ่มรูปสไลด์ร้านอาหาร/ID: ' . $id);
+            \App\Model\Log\log_backend_login::log($this->url . '/เพิ่มรูปสไลด์รถยนต์/ID: ' . $id);
 
             DB::commit();
             return redirect()->to('backend/' . $this->url . '/' . $ref_id . '/imageslide/')->with('success', true)->with('message', ' Create Complete!');
@@ -609,7 +690,7 @@ class Mg_RestaurantController extends Controller
         } catch (\Exception $e) {
             DB::rollback();
             ## Log
-            $log_code = \App\Model\Log\log_backend_login::log($this->url . '/เพิ่มรูปสไลด์ร้านอาหาร/ID:/Error:' . substr($e->getMessage(), 0, 180));
+            $log_code = \App\Model\Log\log_backend_login::log($this->url . '/เพิ่มรูปสไลด์รถยนต์/ID:/Error:' . substr($e->getMessage(), 0, 180));
             // throw $e;
             // echo $e->getMessage();
             // return abort(404);
@@ -621,20 +702,20 @@ class Mg_RestaurantController extends Controller
     public function image_delete($ref_id, $id)
     {
         // dd($id);
-        $img = DB::table('mg_slide_img')->where('id', $id)->first();
-        Storage::delete('image/slide/restaurant/' . $img->slide_img_name);
-        DB::table('mg_slide_img')
+        $img = DB::table('mtw_v2_slide_img')->where('id', $id)->first();
+        Storage::delete('image/slide/car/' . $img->slide_img_name);
+        DB::table('mtw_v2_slide_img')
             ->where('id', $id)
             ->delete();
 
         ## Log
-        \App\Model\Log\log_backend_login::log('ลบรูปภาพร้านอาหาร/ID:' . $id);
+        \App\Model\Log\log_backend_login::log('ลบรูปภาพรถยนต์/ID:' . $id);
         return back()->with('success', true)->with('message', ' Delete Complete!');
     }
 
     public function datatables_image(Request $request)
     {
-        $tbl = \App\Model\datatables::datatables_restaurant_img_slide(@$request->all(), $request->get('id'));
+        $tbl = \App\Model\datatables::datatables_car_img_slide(@$request->all(), $request->get('id'));
         $DBT = datatables()->of($tbl);
         $DBT->escapeColumns(['*']); //อนุญาติให้ Return Html ถ้าเอาส่วนนี้ออกจะ Return Text
 
@@ -644,7 +725,7 @@ class Mg_RestaurantController extends Controller
         });
 
         $DBT->editColumn('slide_img_name', function ($col) {
-            $html = '<img src="' . asset('storage/app/public/image/slide/restaurant/' . $col->slide_img_name) . '" title="' . $col->slide_img_name . '" width="20%">';
+            $html = '<img src="' . asset('storage/app/public/image/slide/car/' . $col->slide_img_name) . '" title="' . $col->slide_img_name . '" width="20%">';
             return $html;
         });
 
@@ -663,7 +744,7 @@ class Mg_RestaurantController extends Controller
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="myModalLabel120">ลบโรงแรม</h5>
+                            <h5 class="modal-title" id="myModalLabel120">ลบรถยนต์</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">ยืนยันที่จะลบ " ' . $col->id . '" หรือไม่?

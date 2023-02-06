@@ -10,13 +10,13 @@ use Auth;
 use App\Helpers\General;
 use Intervention\Image\Facades\Image as Image;
 
-class Mg_AttractionController extends Controller
+class Mtw_v2_AttractionController extends Controller
 {
     public function __construct()
     {
-        $this->url  = 'mg_attraction';
+        $this->url  = 'mtw_v2_attraction';
         parent::__construct($this->url);
-        $this->path_file .= '.mg_attraction';
+        $this->path_file .= '.mtw_v2_attraction';
         $this->menu = 'สถานที่ท่องเที่ยว';//\App\Model\Menu::get_menu_name($this->url)['menu'];
         $this->menu_right = '';//\App\Model\Menu::get_menu_name($this->url)['menu_right'];
     }
@@ -95,7 +95,7 @@ class Mg_AttractionController extends Controller
 
         try {
             $data = [];
-            $columns = DB::getSchemaBuilder()->getColumnListing('mg_attractions');
+            $columns = DB::getSchemaBuilder()->getColumnListing('mtw_v2_attractions');
             $count_columns = count($columns);
             if($columns) {
                 foreach ($columns as $key => $name) {
@@ -115,7 +115,7 @@ class Mg_AttractionController extends Controller
                 }
             }
             // dd($data);
-            DB::table('mg_attractions')
+            DB::table('mtw_v2_attractions')
             ->insert($data);
             $id = DB::getPdo()->lastInsertId();
 
@@ -153,7 +153,7 @@ class Mg_AttractionController extends Controller
                         'cover_img_width'       => $width,
                         'cover_img_height'      => $height
                     ];
-                    DB::table('mg_attractions')->where('id', $img_id)->update($data_img);
+                    DB::table('mtw_v2_attractions')->where('id', $img_id)->update($data_img);
 
                 }
             }
@@ -248,7 +248,7 @@ class Mg_AttractionController extends Controller
         try {
 
             $data = [];
-            $columns = DB::getSchemaBuilder()->getColumnListing('mg_attractions');
+            $columns = DB::getSchemaBuilder()->getColumnListing('mtw_v2_attractions');
             $count_columns = count($columns);
             if($columns) {
                 foreach ($columns as $key => $name) {
@@ -275,7 +275,7 @@ class Mg_AttractionController extends Controller
             unset($data['id']);
 
             //dd($data);
-            DB::table('mg_attractions')
+            DB::table('mtw_v2_attractions')
             ->where('id',$id)
             ->update($data);
 
@@ -313,7 +313,7 @@ class Mg_AttractionController extends Controller
                         'cover_img_width'       => $width,
                         'cover_img_height'      => $height
                     ];
-                    DB::table('mg_attractions')->where('id', $img_id)->update($data_img);
+                    DB::table('mtw_v2_attractions')->where('id', $img_id)->update($data_img);
 
                 }
             }
@@ -350,7 +350,7 @@ class Mg_AttractionController extends Controller
     public function delete($id)
     {
         $data = [];
-        $columns = DB::getSchemaBuilder()->getColumnListing('mg_attractions');
+        $columns = DB::getSchemaBuilder()->getColumnListing('mtw_v2_attractions');
         $count_columns = count($columns);
         if($columns) {
             foreach ($columns as $key => $name) {
@@ -364,7 +364,7 @@ class Mg_AttractionController extends Controller
             }
         }
         // dd($data);
-        DB::table('mg_attractions')
+        DB::table('mtw_v2_attractions')
         ->where('id',$id)
         ->update($data);
         ## Log

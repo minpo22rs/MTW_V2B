@@ -12,14 +12,14 @@ use Intervention\Image\Facades\Image as Image;
 use Illuminate\Support\Facades\Storage;
 use File;
 
-class Mg_Car_CategoryController extends Controller
+class Mtw_v2_Product_CategoryController extends Controller
 {
     public function __construct()
     {
-        $this->url = 'mg_car_category';
+        $this->url = 'mtw_v2_product_category';
         parent::__construct($this->url);
-        $this->path_file .= '.mg_car_category';
-        $this->menu = 'ประเภทรถยนต์'; //\App\Model\Menu::get_menu_name($this->url)['menu'];
+        $this->path_file .= '.mtw_v2_product_category';
+        $this->menu = 'ประเภทสินค้า'; //\App\Model\Menu::get_menu_name($this->url)['menu'];
         $this->menu_right = ''; //\App\Model\Menu::get_menu_name($this->url)['menu_right'];
     }
 
@@ -59,7 +59,7 @@ class Mg_Car_CategoryController extends Controller
                 'cate_name' => 'required',
             ],
             [
-                'cate_name.required' => 'ประเภทรถยนต์จำเป็นต้องระบุข้อมูลค่ะ',
+                'cate_name.required' => 'ประเภทสินค้าจำเป็นต้องระบุข้อมูลค่ะ',
             ]
         );
 
@@ -67,7 +67,7 @@ class Mg_Car_CategoryController extends Controller
 
         try {
             $data = [];
-            $columns = DB::getSchemaBuilder()->getColumnListing('mg_category');
+            $columns = DB::getSchemaBuilder()->getColumnListing('mtw_v2_category');
             $count_columns = count($columns);
             if ($columns) {
                 foreach ($columns as $key => $name) {
@@ -82,7 +82,7 @@ class Mg_Car_CategoryController extends Controller
                 }
             }
             // dd($data);
-            DB::table('mg_category')
+            DB::table('mtw_v2_category')
                 ->insert($data);
             $id = DB::getPdo()->lastInsertId();
 
@@ -112,7 +112,7 @@ class Mg_Car_CategoryController extends Controller
 
                     ### Path Real
                     $FileGen = $img_id . '.' . $file->getClientOriginalExtension();
-                    $Path_File = storage_path('app/public/image/category/car/');
+                    $Path_File = storage_path('app/public/image/category/product/');
 
                     ### Resize - ก่อนย้ายจาก temp ไป Folder รูป
                     // $Path_File_Resize  = storage_path('app/public/image/image/tmp');
@@ -132,13 +132,13 @@ class Mg_Car_CategoryController extends Controller
                         'cover_img_width' => $width,
                         'cover_img_height' => $height,
                     ];
-                    DB::table('mg_category')->where('id', $img_id)->update($data_img);
+                    DB::table('mtw_v2_category')->where('id', $img_id)->update($data_img);
 
                 }
             }
 
             ## Log
-            \App\Model\Log\log_backend_login::log($this->url . '/เพิ่มข้อมูลประเภทรถยนต์/ID: ' . $id);
+            \App\Model\Log\log_backend_login::log($this->url . '/เพิ่มข้อมูลประเภทสินค้า/ID: ' . $id);
 
             DB::commit();
             return redirect()->to('backend/' . $this->url)->with('success', true)->with('message', ' Create Complete!');
@@ -146,7 +146,7 @@ class Mg_Car_CategoryController extends Controller
         } catch (\Exception $e) {
             DB::rollback();
             ## Log
-            $log_code = \App\Model\Log\log_backend_login::log($this->url . '/เพิ่มข้อมูลประเภทรถยนต์/ID:/Error:' . $e->getMessage());
+            $log_code = \App\Model\Log\log_backend_login::log($this->url . '/เพิ่มข้อมูลประเภทสินค้า/ID:/Error:' . $e->getMessage());
             // throw $e;
             // echo $e->getMessage();
             // return abort(404);
@@ -186,7 +186,7 @@ class Mg_Car_CategoryController extends Controller
                 'cate_name' => 'required',
             ],
             [
-                'cate_name.required' => 'ประเภทรถยนต์จำเป็นต้องระบุข้อมูลค่ะ',
+                'cate_name.required' => 'ประเภทสินค้าจำเป็นต้องระบุข้อมูลค่ะ',
             ]
         );
 
@@ -195,7 +195,7 @@ class Mg_Car_CategoryController extends Controller
         try {
 
             $data = [];
-            $columns = DB::getSchemaBuilder()->getColumnListing('mg_category');
+            $columns = DB::getSchemaBuilder()->getColumnListing('mtw_v2_category');
             $count_columns = count($columns);
             if ($columns) {
                 foreach ($columns as $key => $name) {
@@ -222,7 +222,7 @@ class Mg_Car_CategoryController extends Controller
             unset($data['id']);
 
             //dd($data);
-            DB::table('mg_category')
+            DB::table('mtw_v2_category')
                 ->where('id', $id)
                 ->update($data);
 
@@ -251,7 +251,7 @@ class Mg_Car_CategoryController extends Controller
 
                     ### Path Real
                     $FileGen = $img_id . '.' . $file->getClientOriginalExtension();
-                    $Path_File = storage_path('app/public/image/category/car/');
+                    $Path_File = storage_path('app/public/image/category/product/');
 
                     ### Resize - ก่อนย้ายจาก temp ไป Folder รูป
                     // $Path_File_Resize  = storage_path('app/public/image/image/tmp');
@@ -271,13 +271,13 @@ class Mg_Car_CategoryController extends Controller
                         'cover_img_width' => $width,
                         'cover_img_height' => $height,
                     ];
-                    DB::table('mg_category')->where('id', $img_id)->update($data_img);
+                    DB::table('mtw_v2_category')->where('id', $img_id)->update($data_img);
 
                 }
             }
 
             ## Log
-            \App\Model\Log\log_backend_login::log($this->url . '/แก้ไข้ข้อมูลประเภทรถยนต์/ID: ' . $id);
+            \App\Model\Log\log_backend_login::log($this->url . '/แก้ไข้ข้อมูลประเภทสินค้า/ID: ' . $id);
 
             DB::commit();
             return redirect()->to('backend/' . $this->url)->with('success', true)->with('message', ' Update Complete!');
@@ -285,7 +285,7 @@ class Mg_Car_CategoryController extends Controller
         } catch (\Exception $e) {
             DB::rollback();
             ## Log
-            $log_code = \App\Model\Log\log_backend_login::log($this->url . '/แก้ไข้ข้อมูลประเภทรถยนต์/ID:/Error:' . $e->getMessage());
+            $log_code = \App\Model\Log\log_backend_login::log($this->url . '/แก้ไข้ข้อมูลประเภทสินค้า/ID:/Error:' . $e->getMessage());
             // throw $e;
             // echo $e->getMessage();
             // return abort(404);
@@ -308,7 +308,7 @@ class Mg_Car_CategoryController extends Controller
     public function delete($id)
     {
         $data = [];
-        $columns = DB::getSchemaBuilder()->getColumnListing('mg_category');
+        $columns = DB::getSchemaBuilder()->getColumnListing('mtw_v2_category');
         $count_columns = count($columns);
         if ($columns) {
             foreach ($columns as $key => $name) {
@@ -322,18 +322,18 @@ class Mg_Car_CategoryController extends Controller
             }
         }
         // dd($data);
-        DB::table('mg_category')
+        DB::table('mtw_v2_category')
             ->where('id', $id)
             ->update($data);
         ## Log
-        \App\Model\Log\log_backend_login::log('ลบประเภทรถยนต์/ID:' . $id);
+        \App\Model\Log\log_backend_login::log('ลบประเภทสินค้า/ID:' . $id);
         return back()->with('success', true)->with('message', ' Delete Complete!');
     }
 
     public function datatables(Request $request)
     {
 
-        $tbl = \App\Model\datatables::datatables_category(@$request->all(), 'car');
+        $tbl = \App\Model\datatables::datatables_category(@$request->all(), 'product');
         $DBT = datatables()->of($tbl);
         $DBT->escapeColumns(['*']); //อนุญาติให้ Return Html ถ้าเอาส่วนนี้ออกจะ Return Text
 
@@ -348,7 +348,7 @@ class Mg_Car_CategoryController extends Controller
         });
 
         $DBT->editColumn('cover_img_name', function ($col) {
-            $html = '<img src="' . asset('storage/app/public/image/category/car/' . $col->cover_img_name) . '" title="' . $col->cover_img_name . '" width="20%">';
+            $html = '<img src="' . asset('storage/app/public/image/category/product/' . $col->cover_img_name) . '" title="' . $col->cover_img_name . '" width="20%">';
             return $html;
         });
 
@@ -368,19 +368,19 @@ class Mg_Car_CategoryController extends Controller
                 <div class="modal-dialog modal-dialog-centered modal-lg">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h4 class="modal-title" id="myModalLabel17">แก้ไขประเภทรถยนต์ : " ' . $col->cate_name . ' "</h4>
+                            <h4 class="modal-title" id="myModalLabel17">แก้ไขประเภทสินค้า : " ' . $col->cate_name . ' "</h4>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
                         <form class="form form-horizontal" action="' . url('backend/' . $this->url . '/' . $col->id) . '" method="POST" enctype="multipart/form-data">
                             <input type="hidden" name="_token" value="' . csrf_token() . '">
                             <input name="_method" type="hidden" value="PUT">
-                            <input type="hidden" name="type" value="car">
+                            <input type="hidden" name="type" value="product">
                             <div class="row">
                                 <div class="col-5">
                                     <div class="mb-1 row">
                                         <div class="col-sm-12">
-                                            <label class="col-form-label" for="cate_name">ประเภทรถยนต์</label>
+                                            <label class="col-form-label" for="cate_name">ประเภทสินค้า</label>
                                         </div>
                                         <div class="col-sm-12">
                                             <input type="text" id="cate_name" class="form-control" name="cate_name" value="' . $col->cate_name . '"/>
@@ -417,7 +417,7 @@ class Mg_Car_CategoryController extends Controller
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="myModalLabel120">ลบประเภทรถยนต์</h5>
+                            <h5 class="modal-title" id="myModalLabel120">ลบประเภทสินค้า</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">ยืนยันที่จะลบ " ' . $col->cate_name . '" หรือไม่?

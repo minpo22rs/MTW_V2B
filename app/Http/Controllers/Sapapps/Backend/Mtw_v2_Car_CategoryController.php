@@ -2,22 +2,27 @@
 
 namespace App\Http\Controllers\Sapapps\Backend;
 
+// use App\Helpers\General;
+use App\Helpers\General;
 use App\Http\Controllers\Controller;
 use Auth;
 use DB;
 use Illuminate\Http\Request;
+use Intervention\Image\Facades\Image as Image;
+use Illuminate\Support\Facades\Storage;
+use File;
 
-class Mg_Hotel_CategoryController extends Controller
+class Mtw_v2_Car_CategoryController extends Controller
 {
-
     public function __construct()
     {
-        $this->url = 'mg_hotel_category';
+        $this->url = 'mtw_v2_car_category';
         parent::__construct($this->url);
-        $this->path_file .= '.mg_hotel_category';
-        $this->menu = 'ประเภทโรงแรม'; //\App\Model\Menu::get_menu_name($this->url)['menu'];
+        $this->path_file .= '.mtw_v2_car_category';
+        $this->menu = 'ประเภทรถยนต์'; //\App\Model\Menu::get_menu_name($this->url)['menu'];
         $this->menu_right = ''; //\App\Model\Menu::get_menu_name($this->url)['menu_right'];
     }
+
     /**
      * Display a listing of the resource.
      *
@@ -31,16 +36,6 @@ class Mg_Hotel_CategoryController extends Controller
             '_title' => $this->menu,
         ];
         return view($this->path_file . '.index', $data);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -64,7 +59,7 @@ class Mg_Hotel_CategoryController extends Controller
                 'cate_name' => 'required',
             ],
             [
-                'cate_name.required' => 'ประเภทสินค้าจำเป็นต้องระบุข้อมูลค่ะ',
+                'cate_name.required' => 'ประเภทรถยนต์จำเป็นต้องระบุข้อมูลค่ะ',
             ]
         );
 
@@ -72,7 +67,7 @@ class Mg_Hotel_CategoryController extends Controller
 
         try {
             $data = [];
-            $columns = DB::getSchemaBuilder()->getColumnListing('mg_category');
+            $columns = DB::getSchemaBuilder()->getColumnListing('mtw_v2_category');
             $count_columns = count($columns);
             if ($columns) {
                 foreach ($columns as $key => $name) {
@@ -87,63 +82,12 @@ class Mg_Hotel_CategoryController extends Controller
                 }
             }
             // dd($data);
-            DB::table('mg_category')
+            DB::table('mtw_v2_category')
                 ->insert($data);
             $id = DB::getPdo()->lastInsertId();
 
-            if (@$cover_img_name) {
-                $file = $request->file('cover_img_name');
-                if ($file) {
 
-                    ### Parameters
-                    $img_id = $id;
-                    $name_upload = $file->getClientOriginalName();
-                    $type = $file->getMimeType();
 
-                    $fileSize = filesize($file->getRealPath());
-                    if ($fileSize < 1024) {
-                        $size = $fileSize . ' bytes';
-
-                    } elseif ($fileSize < 1048576) {
-                        $size = round($fileSize / 1024, 2) . ' KB';
-
-                    } else {
-                        $size = round($fileSize / 1048576, 2) . ' MB';
-
-                    }
-
-                    $width = getimagesize($file->getRealPath())[0];
-                    $height = getimagesize($file->getRealPath())[1];
-
-                    ### Path Real
-                    $FileGen = $img_id . '.' . $file->getClientOriginalExtension();
-                    $Path_File = storage_path('app/public/image/category/hotel/');
-
-                    ### Resize - ก่อนย้ายจาก temp ไป Folder รูป
-                    // $Path_File_Resize  = storage_path('app/public/image/image/tmp');
-                    // $image = Image::make($file->getRealPath())
-                    // ->resize(1600, null, function ($constraint) {
-                    //     $constraint->aspectRatio(); //ปรับไม่ให้เสีย Scale
-                    // })
-                    // ->save($Path_File_Resize.'/'.$FileGen);
-
-                    $file->move($Path_File, $FileGen);
-
-                    $data_img = [
-                        'cover_img_name' => $FileGen,
-                        'cover_img_name_upload' => $name_upload,
-                        'cover_img_type' => $type,
-                        'cover_img_size' => $size,
-                        'cover_img_width' => $width,
-                        'cover_img_height' => $height,
-                    ];
-                    DB::table('mg_category')->where('id', $img_id)->update($data_img);
-
-                }
-            }
-
-            ## Log
-            \App\Model\Log\log_backend_login::log($this->url . '/เพิ่มข้อมูลประเภทสินค้า/ID: ' . $id);
 
             DB::commit();
             return redirect()->to('backend/' . $this->url)->with('success', true)->with('message', ' Create Complete!');
@@ -151,7 +95,7 @@ class Mg_Hotel_CategoryController extends Controller
         } catch (\Exception $e) {
             DB::rollback();
             ## Log
-            $log_code = \App\Model\Log\log_backend_login::log($this->url . '/เพิ่มข้อมูลประเภทสินค้า/ID:/Error:' . $e->getMessage());
+            $log_code = \App\Model\Log\log_backend_login::log($this->url . '/เพิ่มข้อมูลประเภทรถยนต์/ID:/Error:' . $e->getMessage());
             // throw $e;
             // echo $e->getMessage();
             // return abort(404);
@@ -166,17 +110,6 @@ class Mg_Hotel_CategoryController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
     {
         //
     }
@@ -202,7 +135,7 @@ class Mg_Hotel_CategoryController extends Controller
                 'cate_name' => 'required',
             ],
             [
-                'cate_name.required' => 'ประเภทสินค้าจำเป็นต้องระบุข้อมูลค่ะ',
+                'cate_name.required' => 'ประเภทรถยนต์จำเป็นต้องระบุข้อมูลค่ะ',
             ]
         );
 
@@ -211,7 +144,7 @@ class Mg_Hotel_CategoryController extends Controller
         try {
 
             $data = [];
-            $columns = DB::getSchemaBuilder()->getColumnListing('mg_category');
+            $columns = DB::getSchemaBuilder()->getColumnListing('mtw_v2_category');
             $count_columns = count($columns);
             if ($columns) {
                 foreach ($columns as $key => $name) {
@@ -238,7 +171,7 @@ class Mg_Hotel_CategoryController extends Controller
             unset($data['id']);
 
             //dd($data);
-            DB::table('mg_category')
+            DB::table('mtw_v2_category')
                 ->where('id', $id)
                 ->update($data);
 
@@ -267,7 +200,7 @@ class Mg_Hotel_CategoryController extends Controller
 
                     ### Path Real
                     $FileGen = $img_id . '.' . $file->getClientOriginalExtension();
-                    $Path_File = storage_path('app/public/image/category/hotel/');
+                    $Path_File = storage_path('app/public/image/category/car/');
 
                     ### Resize - ก่อนย้ายจาก temp ไป Folder รูป
                     // $Path_File_Resize  = storage_path('app/public/image/image/tmp');
@@ -287,13 +220,13 @@ class Mg_Hotel_CategoryController extends Controller
                         'cover_img_width' => $width,
                         'cover_img_height' => $height,
                     ];
-                    DB::table('mg_category')->where('id', $img_id)->update($data_img);
+                    DB::table('mtw_v2_category')->where('id', $img_id)->update($data_img);
 
                 }
             }
 
             ## Log
-            \App\Model\Log\log_backend_login::log($this->url . '/แก้ไข้ข้อมูลประเภทสินค้า/ID: ' . $id);
+            \App\Model\Log\log_backend_login::log($this->url . '/แก้ไข้ข้อมูลประเภทรถยนต์/ID: ' . $id);
 
             DB::commit();
             return redirect()->to('backend/' . $this->url)->with('success', true)->with('message', ' Update Complete!');
@@ -301,7 +234,7 @@ class Mg_Hotel_CategoryController extends Controller
         } catch (\Exception $e) {
             DB::rollback();
             ## Log
-            $log_code = \App\Model\Log\log_backend_login::log($this->url . '/แก้ไข้ข้อมูลประเภทสินค้า/ID:/Error:' . $e->getMessage());
+            $log_code = \App\Model\Log\log_backend_login::log($this->url . '/แก้ไข้ข้อมูลประเภทรถยนต์/ID:/Error:' . $e->getMessage());
             // throw $e;
             // echo $e->getMessage();
             // return abort(404);
@@ -320,10 +253,11 @@ class Mg_Hotel_CategoryController extends Controller
     {
         //
     }
+
     public function delete($id)
     {
         $data = [];
-        $columns = DB::getSchemaBuilder()->getColumnListing('mg_category');
+        $columns = DB::getSchemaBuilder()->getColumnListing('mtw_v2_category');
         $count_columns = count($columns);
         if ($columns) {
             foreach ($columns as $key => $name) {
@@ -337,17 +271,18 @@ class Mg_Hotel_CategoryController extends Controller
             }
         }
         // dd($data);
-        DB::table('mg_category')
+        DB::table('mtw_v2_category')
             ->where('id', $id)
             ->update($data);
         ## Log
-        \App\Model\Log\log_backend_login::log('ลบประเภทโรงแรม/ID:' . $id);
+        \App\Model\Log\log_backend_login::log('ลบประเภทรถยนต์/ID:' . $id);
         return back()->with('success', true)->with('message', ' Delete Complete!');
     }
+
     public function datatables(Request $request)
     {
 
-        $tbl = \App\Model\datatables::datatables_category(@$request->all(), 'hotel');
+        $tbl = \App\Model\datatables::datatables_category(@$request->all(), 'car');
         $DBT = datatables()->of($tbl);
         $DBT->escapeColumns(['*']); //อนุญาติให้ Return Html ถ้าเอาส่วนนี้ออกจะ Return Text
 
@@ -362,7 +297,7 @@ class Mg_Hotel_CategoryController extends Controller
         });
 
         $DBT->editColumn('cover_img_name', function ($col) {
-            $html = '<img src="' . asset('storage/app/public/image/category/hotel/' . $col->cover_img_name) . '" title="' . $col->cover_img_name . '" width="20%">';
+            $html = '<img src="' . asset('storage/app/public/image/category/car/' . $col->cover_img_name) . '" title="' . $col->cover_img_name . '" width="20%">';
             return $html;
         });
 
@@ -382,19 +317,19 @@ class Mg_Hotel_CategoryController extends Controller
                 <div class="modal-dialog modal-dialog-centered modal-lg">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h4 class="modal-title" id="myModalLabel17">แก้ไขประเภทโรงแรม : " ' . $col->cate_name . ' "</h4>
+                            <h4 class="modal-title" id="myModalLabel17">แก้ไขประเภทรถยนต์ : " ' . $col->cate_name . ' "</h4>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
                         <form class="form form-horizontal" action="' . url('backend/' . $this->url . '/' . $col->id) . '" method="POST" enctype="multipart/form-data">
                             <input type="hidden" name="_token" value="' . csrf_token() . '">
                             <input name="_method" type="hidden" value="PUT">
-                            <input type="hidden" name="type" value="hotel">
+                            <input type="hidden" name="type" value="car">
                             <div class="row">
                                 <div class="col-5">
                                     <div class="mb-1 row">
                                         <div class="col-sm-12">
-                                            <label class="col-form-label" for="cate_name">ประเภทโรงแรม</label>
+                                            <label class="col-form-label" for="cate_name">ประเภทรถยนต์</label>
                                         </div>
                                         <div class="col-sm-12">
                                             <input type="text" id="cate_name" class="form-control" name="cate_name" value="' . $col->cate_name . '"/>
@@ -431,7 +366,7 @@ class Mg_Hotel_CategoryController extends Controller
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="myModalLabel120">ลบประเภทโรงแรม</h5>
+                            <h5 class="modal-title" id="myModalLabel120">ลบประเภทรถยนต์</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">ยืนยันที่จะลบ " ' . $col->cate_name . '" หรือไม่?
@@ -449,4 +384,5 @@ class Mg_Hotel_CategoryController extends Controller
 
         return $DBT->make(true);
     }
+
 }

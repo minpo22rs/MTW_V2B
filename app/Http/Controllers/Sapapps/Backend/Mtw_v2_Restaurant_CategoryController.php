@@ -7,14 +7,14 @@ use Auth;
 use DB;
 use Illuminate\Http\Request;
 
-class Mg_Restaurant_CategoryController extends Controller
+class Mtw_v2_Restaurant_CategoryController extends Controller
 {
 
     public function __construct()
     {
-        $this->url = 'mg_restaurant_category';
+        $this->url = 'mtw_v2_restaurant_category';
         parent::__construct($this->url);
-        $this->path_file .= '.mg_restaurant_category';
+        $this->path_file .= '.mtw_v2_restaurant_category';
         $this->menu = 'ประเภทร้านอาหาร'; //\App\Model\Menu::get_menu_name($this->url)['menu'];
         $this->menu_right = ''; //\App\Model\Menu::get_menu_name($this->url)['menu_right'];
     }
@@ -72,7 +72,7 @@ class Mg_Restaurant_CategoryController extends Controller
 
         try {
             $data = [];
-            $columns = DB::getSchemaBuilder()->getColumnListing('mg_category');
+            $columns = DB::getSchemaBuilder()->getColumnListing('mtw_v2_category');
             $count_columns = count($columns);
             if ($columns) {
                 foreach ($columns as $key => $name) {
@@ -87,7 +87,7 @@ class Mg_Restaurant_CategoryController extends Controller
                 }
             }
             // dd($data);
-            DB::table('mg_category')
+            DB::table('mtw_v2_category')
                 ->insert($data);
             $id = DB::getPdo()->lastInsertId();
 
@@ -137,7 +137,7 @@ class Mg_Restaurant_CategoryController extends Controller
                         'cover_img_width' => $width,
                         'cover_img_height' => $height,
                     ];
-                    DB::table('mg_category')->where('id', $img_id)->update($data_img);
+                    DB::table('mtw_v2_category')->where('id', $img_id)->update($data_img);
 
                 }
             }
@@ -211,7 +211,7 @@ class Mg_Restaurant_CategoryController extends Controller
         try {
 
             $data = [];
-            $columns = DB::getSchemaBuilder()->getColumnListing('mg_category');
+            $columns = DB::getSchemaBuilder()->getColumnListing('mtw_v2_category');
             $count_columns = count($columns);
             if ($columns) {
                 foreach ($columns as $key => $name) {
@@ -238,7 +238,7 @@ class Mg_Restaurant_CategoryController extends Controller
             unset($data['id']);
 
             //dd($data);
-            DB::table('mg_category')
+            DB::table('mtw_v2_category')
                 ->where('id', $id)
                 ->update($data);
 
@@ -287,7 +287,7 @@ class Mg_Restaurant_CategoryController extends Controller
                         'cover_img_width' => $width,
                         'cover_img_height' => $height,
                     ];
-                    DB::table('mg_category')->where('id', $img_id)->update($data_img);
+                    DB::table('mtw_v2_category')->where('id', $img_id)->update($data_img);
 
                 }
             }
@@ -323,7 +323,7 @@ class Mg_Restaurant_CategoryController extends Controller
     public function delete($id)
     {
         $data = [];
-        $columns = DB::getSchemaBuilder()->getColumnListing('mg_category');
+        $columns = DB::getSchemaBuilder()->getColumnListing('mtw_v2_category');
         $count_columns = count($columns);
         if ($columns) {
             foreach ($columns as $key => $name) {
@@ -337,7 +337,7 @@ class Mg_Restaurant_CategoryController extends Controller
             }
         }
         // dd($data);
-        DB::table('mg_category')
+        DB::table('mtw_v2_category')
             ->where('id', $id)
             ->update($data);
         ## Log

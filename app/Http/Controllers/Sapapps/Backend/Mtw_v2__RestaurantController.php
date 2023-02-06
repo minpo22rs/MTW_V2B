@@ -8,15 +8,16 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
-class Mg_HotelController extends Controller
+class Mtw_v2_RestaurantController extends Controller
 {
 
     public function __construct()
     {
-        $this->url = 'mg_hotel';
+        $this->url = 'mtw_v2_restaurant';
+        $this->table = 'mtw_v2_restaurants';
         parent::__construct($this->url);
-        $this->path_file .= '.mg_hotel';
-        $this->menu = 'ข้อมูลโรงแรม'; //\App\Model\Menu::get_menu_name($this->url)['menu'];
+        $this->path_file .= '.mtw_v2_restaurant';
+        $this->menu = 'ข้อมูลร้านอาหาร'; //\App\Model\Menu::get_menu_name($this->url)['menu'];
         $this->menu_right = ''; //\App\Model\Menu::get_menu_name($this->url)['menu_right'];
     }
     /**
@@ -71,25 +72,25 @@ class Mg_HotelController extends Controller
         $this->validate(
             $request,
             [
-                'hotel_name' => 'required',
+                'restaurant_name' => 'required',
                 'category' => 'required',
                 'short_descrip' => 'required',
                 'full_descrip' => 'required',
                 'unit_price' => 'required',
                 'sale_price' => 'required',
-                'hotel_img_name' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:5120',
+                'restaurant_img_name' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:5120',
             ],
             [
-                'hotel_name.required' => 'ชื่อสินค้าจำเป็นต้องระบุข้อมูลค่ะ',
-                'category.required' => 'หมวดหมู่สินค้าจำเป็นต้องระบุข้อมูลค่ะ',
+                'restaurant_name.required' => 'ชื่อร้านอาหารจำเป็นต้องระบุข้อมูลค่ะ',
+                'category.required' => 'หมวดหมู่ร้านอาหารจำเป็นต้องระบุข้อมูลค่ะ',
                 'short_descrip.required' => 'รายละเอียดโดยย่อจำเป็นต้องระบุข้อมูลค่ะ',
                 'full_descrip.required' => 'รายละเอียดเต็มจำเป็นต้องระบุข้อมูลค่ะ',
                 'unit_price.required' => 'ราคาต่อหน่วยจำเป็นต้องระบุข้อมูลค่ะ',
                 'sale_price.required' => 'ราคาขายจำเป็นต้องระบุข้อมูลค่ะ',
-                'hotel_img_name.required' => 'Image จำเป็นต้องระบุข้อมูลค่ะ',
-                'hotel_img_name.image' => 'Image รบกวนใช้ไฟล์ประเภทรูปภาพเท่านั้นค่ะ',
-                'hotel_img_name.mimes' => 'Image รบกวนใช้ไฟล์ประเภทรูปภาพนามสกุล :values เท่านั้นค่ะ',
-                'hotel_img_name.max' => 'Image รบกวนใช้ไฟล์ขนาดไม่เกิน :max kilobytes ค่ะ',
+                'restaurant_img_name.required' => 'Image จำเป็นต้องระบุข้อมูลค่ะ',
+                'restaurant_img_name.image' => 'Image รบกวนใช้ไฟล์ประเภทรูปภาพเท่านั้นค่ะ',
+                'restaurant_img_name.mimes' => 'Image รบกวนใช้ไฟล์ประเภทรูปภาพนามสกุล :values เท่านั้นค่ะ',
+                'restaurant_img_name.max' => 'Image รบกวนใช้ไฟล์ขนาดไม่เกิน :max kilobytes ค่ะ',
             ]
         );
 
@@ -97,7 +98,7 @@ class Mg_HotelController extends Controller
 
         try {
             $data = [];
-            $columns = DB::getSchemaBuilder()->getColumnListing('mg_hotels');
+            $columns = DB::getSchemaBuilder()->getColumnListing('mtw_v2_restaurants');
             $count_columns = count($columns);
             if ($columns) {
                 foreach ($columns as $key => $name) {
@@ -117,12 +118,12 @@ class Mg_HotelController extends Controller
             }
 
             // dd($data);
-            DB::table('mg_hotels')
+            DB::table('mtw_v2_restaurants')
                 ->insert($data);
             $id = DB::getPdo()->lastInsertId();
 
-            if (@$hotel_img_name) {
-                $file = $request->file('hotel_img_name');
+            if (@$restaurant_img_name) {
+                $file = $request->file('restaurant_img_name');
                 if ($file) {
 
                     ### Parameters
@@ -147,7 +148,7 @@ class Mg_HotelController extends Controller
 
                     ### Path Real
                     $FileGen = $img_id . '.' . $file->getClientOriginalExtension();
-                    $Path_File = storage_path('app/public/image/hotels/');
+                    $Path_File = storage_path('app/public/image/restaurants/');
 
                     ### Resize - ก่อนย้ายจาก temp ไป Folder รูป
                     // $Path_File_Resize  = storage_path('app/public/image/image/tmp');
@@ -160,21 +161,21 @@ class Mg_HotelController extends Controller
                     $file->move($Path_File, $FileGen);
 
                     $data_img = [
-                        'hotel_img_name' => $FileGen,
-                        'hotel_img_name_upload' => $name_upload,
-                        'hotel_img_type' => $type,
-                        // 'hotel_img_size'        => $size,
-                        'hotel_img_width' => $width,
-                        'hotel_img_height' => $height,
+                        'restaurant_img_name' => $FileGen,
+                        'restaurant_img_name_upload' => $name_upload,
+                        'restaurant_img_type' => $type,
+                        // 'restaurant_img_size'        => $size,
+                        'restaurant_img_width' => $width,
+                        'restaurant_img_height' => $height,
                     ];
 
-                    DB::table('mg_hotels')->where('id', $img_id)->update($data_img);
+                    DB::table('mtw_v2_restaurants')->where('id', $img_id)->update($data_img);
 
                 }
             }
 
             ## Log
-            \App\Model\Log\log_backend_login::log($this->url . '/เพิ่มข้อมูลสินค้า/ID: ' . $id);
+            \App\Model\Log\log_backend_login::log($this->url . '/เพิ่มข้อมูลร้านอาหาร/ID: ' . $id);
 
             DB::commit();
             return redirect()->to('backend/' . $this->url)->with('success', true)->with('message', ' Create Complete!');
@@ -182,7 +183,7 @@ class Mg_HotelController extends Controller
         } catch (\Exception $e) {
             DB::rollback();
             ## Log
-            $log_code = \App\Model\Log\log_backend_login::log($this->url . '/เพิ่มข้อมูลสินค้า/ID:/Error:' . $e->getMessage());
+            $log_code = \App\Model\Log\log_backend_login::log($this->url . '/เพิ่มข้อมูลร้านอาหาร/ID:/Error:' . $e->getMessage());
             // throw $e;
             // echo $e->getMessage();
             // return abort(404);
@@ -214,7 +215,7 @@ class Mg_HotelController extends Controller
             'menu' => $this->menu,
             '_title' => $this->menu,
             'id' => $id,
-            'rec' => \App\Model\dashboard::first_hotel($id),
+            'rec' => \App\Model\dashboard::first_all($id,$this->table ),
         ];
 
         if (Auth::user()->role == 'admin' || Auth::user()->role == 'merchandize') {
@@ -242,7 +243,7 @@ class Mg_HotelController extends Controller
         $this->validate(
             $request,
             [
-                'hotel_name' => 'required',
+                'restaurant_name' => 'required',
                 'category' => 'required',
                 'short_descrip' => 'required',
                 'full_descrip' => 'required',
@@ -250,8 +251,8 @@ class Mg_HotelController extends Controller
                 'sale_price' => 'required',
             ],
             [
-                'hotel_name.required' => 'ชื่อสินค้าจำเป็นต้องระบุข้อมูลค่ะ',
-                'category.required' => 'หมวดหมู่สินค้าจำเป็นต้องระบุข้อมูลค่ะ',
+                'restaurant_name.required' => 'ชื่อร้านอาหารจำเป็นต้องระบุข้อมูลค่ะ',
+                'category.required' => 'หมวดหมู่ร้านอาหารจำเป็นต้องระบุข้อมูลค่ะ',
                 'short_descrip.required' => 'รายละเอียดโดยย่อจำเป็นต้องระบุข้อมูลค่ะ',
                 'full_descrip.required' => 'รายละเอียดเต็มจำเป็นต้องระบุข้อมูลค่ะ',
                 'unit_price.required' => 'ราคาต่อหน่วยจำเป็นต้องระบุข้อมูลค่ะ',
@@ -264,7 +265,7 @@ class Mg_HotelController extends Controller
         try {
 
             $data = [];
-            $columns = DB::getSchemaBuilder()->getColumnListing('mg_hotels');
+            $columns = DB::getSchemaBuilder()->getColumnListing('mtw_v2_restaurants');
             $count_columns = count($columns);
             if ($columns) {
                 foreach ($columns as $key => $name) {
@@ -291,12 +292,12 @@ class Mg_HotelController extends Controller
             unset($data['id']);
 
             //dd($data);
-            DB::table('mg_hotels')
+            DB::table('mtw_v2_restaurants')
                 ->where('id', $id)
                 ->update($data);
 
-            if (@$hotel_img_name) {
-                $file = $request->file('hotel_img_name');
+            if (@$restaurant_img_name) {
+                $file = $request->file('restaurant_img_name');
                 if ($file) {
 
                     ### Parameters
@@ -321,7 +322,7 @@ class Mg_HotelController extends Controller
                     ### Path Real
                     $FileGen = $img_id . '.' . $file->getClientOriginalExtension();
 
-                    $Path_File = storage_path('app/public/image/hotels/');
+                    $Path_File = storage_path('app/public/image/restaurants/');
 
                     ### Resize - ก่อนย้ายจาก temp ไป Folder รูป
                     // $Path_File_Resize  = storage_path('app/public/image/image/tmp');
@@ -334,20 +335,20 @@ class Mg_HotelController extends Controller
                     $file->move($Path_File, $FileGen);
 
                     $data_img = [
-                        'hotel_img_name' => $FileGen,
-                        'hotel_img_name_upload' => $name_upload,
-                        'hotel_img_type' => $type,
-                        'hotel_img_size' => $size,
-                        'hotel_img_width' => $width,
-                        'hotel_img_height' => $height,
+                        'restaurant_img_name' => $FileGen,
+                        'restaurant_img_name_upload' => $name_upload,
+                        'restaurant_img_type' => $type,
+                        'restaurant_img_size' => $size,
+                        'restaurant_img_width' => $width,
+                        'restaurant_img_height' => $height,
                     ];
-                    DB::table('mg_hotels')->where('id', $img_id)->update($data_img);
+                    DB::table('mtw_v2_restaurants')->where('id', $img_id)->update($data_img);
 
                 }
             }
 
             ## Log
-            \App\Model\Log\log_backend_login::log($this->url . '/แก้ไข้ข้อมูลสินค้า/ID: ' . $id);
+            \App\Model\Log\log_backend_login::log($this->url . '/แก้ไข้ข้อมูลร้านอาหาร/ID: ' . $id);
 
             DB::commit();
             return redirect()->to('backend/' . $this->url . '/' . $id . '/edit')->with('success', true)->with('message', ' Update Complete!');
@@ -355,7 +356,7 @@ class Mg_HotelController extends Controller
         } catch (\Exception $e) {
             DB::rollback();
             ## Log
-            $log_code = \App\Model\Log\log_backend_login::log($this->url . '/แก้ไข้ข้อมูลสินค้า/ID:/Error:' . substr($e->getMessage(), 0, 180));
+            $log_code = \App\Model\Log\log_backend_login::log($this->url . '/แก้ไข้ข้อมูลร้านอาหาร/ID:/Error:' . substr($e->getMessage(), 0, 180));
             // throw $e;
             // echo $e->getMessage();
             // return abort(404);
@@ -377,7 +378,7 @@ class Mg_HotelController extends Controller
     {
         if (Auth::user()->role == 'admin' || Auth::user()->role == 'merchandize') {
             $data = [];
-            $columns = DB::getSchemaBuilder()->getColumnListing('mg_hotels');
+            $columns = DB::getSchemaBuilder()->getColumnListing('mtw_v2_restaurants');
             $count_columns = count($columns);
             if ($columns) {
                 foreach ($columns as $key => $name) {
@@ -391,11 +392,11 @@ class Mg_HotelController extends Controller
                 }
             }
             //dd($data);
-            DB::table('mg_hotels')
+            DB::table('mtw_v2_restaurants')
                 ->where('id', $id)
                 ->update($data);
             ## Log
-            \App\Model\Log\log_backend_login::log('ลบข้อมูลสินค้า/ID:' . $id);
+            \App\Model\Log\log_backend_login::log('ลบข้อมูลร้านอาหาร/ID:' . $id);
             return back()->with('success', true)->with('message', ' Delete Complete!');
         } else {
             return abort(403, 'Unauthorized action.');
@@ -403,7 +404,7 @@ class Mg_HotelController extends Controller
     }
     public function datatables(Request $request)
     {
-        $tbl = \App\Model\datatables::datatables_hotel(@$request->all());
+        $tbl = \App\Model\datatables::datatables_all(@$request->all(),$this->table );
         $DBT = datatables()->of($tbl);
         $DBT->escapeColumns(['*']); //อนุญาติให้ Return Html ถ้าเอาส่วนนี้ออกจะ Return Text
 
@@ -424,8 +425,8 @@ class Mg_HotelController extends Controller
             return $html;
         });
 
-        // $DBT->editColumn('hotel_type', function($col){
-        //     $html = \App\Model\dashboard::type_name($col->hotel_type);
+        // $DBT->editColumn('restaurant_type', function($col){
+        //     $html = \App\Model\dashboard::type_name($col->restaurant_type);
         //     return $html;
         // });
 
@@ -434,8 +435,8 @@ class Mg_HotelController extends Controller
             return $html;
         });
 
-        $DBT->editColumn('hotel_img_name', function ($col) {
-            $html = '<img src="' . asset('storage/app/public/image/hotels/' . $col->hotel_img_name) . '" title="' . $col->hotel_img_name . '" width="20%">';
+        $DBT->editColumn('restaurant_img_name', function ($col) {
+            $html = '<img src="' . asset('storage/app/public/image/restaurants/' . $col->restaurant_img_name) . '" title="' . $col->restaurant_img_name . '" width="20%">';
             return $html;
         });
 
@@ -456,10 +457,10 @@ class Mg_HotelController extends Controller
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="myModalLabel120">ลบสินค้า</h5>
+                            <h5 class="modal-title" id="myModalLabel120">ลบร้านอาหาร</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <div class="modal-body">ยืนยันที่จะลบ " ' . $col->hotel_name . '" หรือไม่?
+                        <div class="modal-body">ยืนยันที่จะลบ " ' . $col->restaurant_name . '" หรือไม่?
                         </div>
                         <div class="modal-footer">
                             <form action="' . url('backend/' . $this->url . '/' . $col->id . '/delete') . '" method="get">
@@ -478,12 +479,12 @@ class Mg_HotelController extends Controller
     public function imageslide($id)
     {
 
-        $hotel = \App\Model\dashboard::first_hotel($id);
+        $restaurant = \App\Model\dashboard::first_all($id,$this->table );
         $data = [
             'url' => $this->url,
             'menu' => $this->menu,
             '_title' => $this->menu,
-            'hotel' => $hotel->hotel_name,
+            'restaurant' => $restaurant->restaurant_name,
             'id' => $id,
         ];
         return view($this->path_file . '.imageslide', $data);
@@ -519,7 +520,7 @@ class Mg_HotelController extends Controller
 
         try {
             $data = [];
-            $columns = DB::getSchemaBuilder()->getColumnListing('mg_slide_img');
+            $columns = DB::getSchemaBuilder()->getColumnListing('mtw_v2_slide_img');
             $count_columns = count($columns);
             if ($columns) {
                 foreach ($columns as $key => $name) {
@@ -545,7 +546,7 @@ class Mg_HotelController extends Controller
             }
 
             //dd($data);
-            DB::table('mg_slide_img')
+            DB::table('mtw_v2_slide_img')
                 ->insert($data);
             $id = DB::getPdo()->lastInsertId();
 
@@ -574,7 +575,7 @@ class Mg_HotelController extends Controller
 
                     ### Path Real
                     $FileGen = $img_id . '.' . $file->getClientOriginalExtension();
-                    $Path_File = storage_path('app/public/image/slide/hotel/');
+                    $Path_File = storage_path('app/public/image/slide/restaurant/');
 
                     ### Resize - ก่อนย้ายจาก temp ไป Folder รูป
                     // $Path_File_Resize  = storage_path('app/public/image/image/tmp');
@@ -594,13 +595,13 @@ class Mg_HotelController extends Controller
                         'slide_img_width' => $width,
                         'slide_img_height' => $height,
                     ];
-                    DB::table('mg_slide_img')->where('id', $img_id)->update($data_img);
+                    DB::table('mtw_v2_slide_img')->where('id', $img_id)->update($data_img);
 
                 }
             }
 
             ## Log
-            \App\Model\Log\log_backend_login::log($this->url . '/เพิ่มรูปสไลด์สินค้า/ID: ' . $id);
+            \App\Model\Log\log_backend_login::log($this->url . '/เพิ่มรูปสไลด์ร้านอาหาร/ID: ' . $id);
 
             DB::commit();
             return redirect()->to('backend/' . $this->url . '/' . $ref_id . '/imageslide/')->with('success', true)->with('message', ' Create Complete!');
@@ -608,7 +609,7 @@ class Mg_HotelController extends Controller
         } catch (\Exception $e) {
             DB::rollback();
             ## Log
-            $log_code = \App\Model\Log\log_backend_login::log($this->url . '/เพิ่มรูปสไลด์สินค้า/ID:/Error:' . substr($e->getMessage(), 0, 180));
+            $log_code = \App\Model\Log\log_backend_login::log($this->url . '/เพิ่มรูปสไลด์ร้านอาหาร/ID:/Error:' . substr($e->getMessage(), 0, 180));
             // throw $e;
             // echo $e->getMessage();
             // return abort(404);
@@ -620,20 +621,20 @@ class Mg_HotelController extends Controller
     public function image_delete($ref_id, $id)
     {
         // dd($id);
-        $img = DB::table('mg_slide_img')->where('id', $id)->first();
-        Storage::delete('image/slide/hotel/' . $img->slide_img_name);
-        DB::table('mg_slide_img')
+        $img = DB::table('mtw_v2_slide_img')->where('id', $id)->first();
+        Storage::delete('image/slide/restaurant/' . $img->slide_img_name);
+        DB::table('mtw_v2_slide_img')
             ->where('id', $id)
             ->delete();
 
         ## Log
-        \App\Model\Log\log_backend_login::log('ลบรูปภาพสินค้า/ID:' . $id);
+        \App\Model\Log\log_backend_login::log('ลบรูปภาพร้านอาหาร/ID:' . $id);
         return back()->with('success', true)->with('message', ' Delete Complete!');
     }
 
     public function datatables_image(Request $request)
     {
-        $tbl = \App\Model\datatables::datatables_hotel_img_slide(@$request->all(), $request->get('id'));
+        $tbl = \App\Model\datatables::datatables_restaurant_img_slide(@$request->all(), $request->get('id'));
         $DBT = datatables()->of($tbl);
         $DBT->escapeColumns(['*']); //อนุญาติให้ Return Html ถ้าเอาส่วนนี้ออกจะ Return Text
 
@@ -643,7 +644,7 @@ class Mg_HotelController extends Controller
         });
 
         $DBT->editColumn('slide_img_name', function ($col) {
-            $html = '<img src="' . asset('storage/app/public/image/slide/hotel/' . $col->slide_img_name) . '" title="' . $col->slide_img_name . '" width="20%">';
+            $html = '<img src="' . asset('storage/app/public/image/slide/restaurant/' . $col->slide_img_name) . '" title="' . $col->slide_img_name . '" width="20%">';
             return $html;
         });
 
