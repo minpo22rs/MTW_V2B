@@ -10,7 +10,7 @@
 @endpush
 
 
-@section('content')  
+@section('content')
 <div class="pcoded-content">
     <div class="pcoded-inner-content">
         <!-- Main-body start -->
@@ -19,13 +19,13 @@
                 <!-- Page-body start -->
                 <div class="page-body">
                     <div class="row">
-                        <div class="col-sm-12">    
-                            @include('sapapps.backend.inc.alert')                                            
+                        <div class="col-sm-12">
+                            @include('sapapps.backend.inc.alert')
                             <!-- Scroll - Vertical, Dynamic Height table start -->
                             <div class="card">
                                 <div class="card-block">
                                     <h5 class="m-b-10">{{ $menu }} > Stock > {!! $rec->product_name !!}</h5>
-                                    <p class="text-muted m-b-10"><code>ข้อมูล</code></p>
+                                    <p class="text-muted m-b-10"><code>ข้อมูลs</code></p>
                                     <ul class="breadcrumb-title b-t-default p-t-10">
                                         <li class="breadcrumb-item">
                                             <a href="{!! url("backend/$url") !!}"> <i class="fa fa-home"></i> </a>
@@ -130,4 +130,4 @@
 @endpush
 
 
-    
+
