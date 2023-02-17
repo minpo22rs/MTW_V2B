@@ -391,6 +391,7 @@ Route::resource($url, $file.'Controller')
 ])->except([
 
 ]);
+
 Route::get($url.'/{id?}/stock', array('uses' => $file.'Controller@stock'))->name($url.'.stock');
 Route::post($url.'/{id?}/stock/input', array('uses' => $file.'Controller@stock_input'))->name($url.'.stock_input');
 Route::post($url.'/datatables', array('uses' => $file.'Controller@datatables'))->name($url.'.datatables');

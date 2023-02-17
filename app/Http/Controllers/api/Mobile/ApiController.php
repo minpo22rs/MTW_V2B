@@ -353,7 +353,7 @@ class ApiController extends Controller
 
 	public function otp_user_mtwa(Request $request)
 	{
-        dd("test");
+        // dd($request);
 		$otp = \App\Model\General::otp_user_mtwa($request->phone);
 
 		return response()->json($otp,200);
